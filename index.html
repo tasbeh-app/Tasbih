@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Tasbeh</title>
+<meta name="theme-color" content="#0b1418">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tasbeh">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+@font-face{font-family:'Amiri';font-weight:400 700;font-display:swap;src:url(fonts/amiri.woff2) format('woff2');}
+@font-face{font-family:'Montserrat';font-weight:100 900;font-display:swap;src:url(fonts/montserrat.woff2) format('woff2');}
+:root{
+  --accent:#ff6a3d;
+  --text:#fff;
+  --muted:rgba(255,255,255,.62);
+  --sheet:#12181c;
+  --line:rgba(255,255,255,.09);
+  --chip:#1d252a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
+html,body{margin:0;height:100%;background:#0b1418;color:var(--text);font-family:Montserrat,system-ui,sans-serif;overflow:hidden;overscroll-behavior:none;}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;}
+svg.i{width:24px;height:24px;display:block;}
+
+#bg{position:fixed;inset:0;width:100%;height:100%;display:block;transform-origin:center;}
+#shade{position:fixed;inset:0;background:#000;opacity:.15;pointer-events:none;}
+#beads{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:2;}
+#tap{position:fixed;inset:0;z-index:1;touch-action:manipulation;}
+
+.top{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:4px;
+  padding:calc(env(safe-area-inset-top) + 8px) 10px 0;}
+.top .sp{flex:1;}
+.ib{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.06);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.ib:active{background:rgba(255,255,255,.16);}
+
+.zikr{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 9%);z-index:3;text-align:center;pointer-events:none;padding:0 22px;}
+.ar{font-family:Amiri,serif;font-weight:700;line-height:1.55;direction:rtl;text-shadow:0 2px 18px rgba(0,0,0,.5);}
+.sep{position:relative;width:min(46vw,190px);height:1px;margin:6px auto 12px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);}
+.sep i{position:absolute;left:50%;top:50%;width:8px;height:8px;background:var(--accent);transform:translate(-50%,-50%) rotate(45deg);}
+.lat{font-weight:600;font-size:clamp(18px,5.4vw,24px);letter-spacing:.3px;text-shadow:0 2px 10px rgba(0,0,0,.5);}
+.tr{margin-top:6px;font-size:clamp(12px,3.6vw,15px);color:var(--muted);text-shadow:0 1px 8px rgba(0,0,0,.6);}
+
+.counter{position:fixed;left:50%;top:63%;width:112px;height:112px;margin:-56px 0 0 -56px;z-index:3;pointer-events:none;}
+.counter svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.counter .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.counter b{font-size:36px;font-weight:700;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.5);}
+.counter small{font-size:12px;color:var(--muted);margin-top:4px;}
+.counter .laps{position:absolute;right:-14px;top:-4px;font-size:11px;font-weight:700;background:var(--accent);color:#fff;border-radius:10px;padding:2px 7px;display:none;}
+
+#done{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;
+  background:rgba(4,7,9,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .6s;}
+#done.show{opacity:1;pointer-events:auto;}
+#done .dar{font-family:Amiri,serif;font-weight:700;font-size:clamp(30px,9vw,46px);direction:rtl;}
+#done .duz{font-size:15px;color:var(--muted);max-width:300px;line-height:1.5;}
+#done .dn{font-size:52px;font-weight:700;color:var(--accent);}
+#done .dh{margin-top:26px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);}
+
+/* Sheets */
+.scrim{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;}
+.scrim.show{opacity:1;pointer-events:auto;}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;max-width:560px;margin:0 auto;max-height:86vh;max-height:86dvh;display:flex;flex-direction:column;
+  background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);
+  padding-bottom:env(safe-area-inset-bottom);}
+.sheet.show{transform:none;}
+.sh-head{display:flex;align-items:center;padding:14px 12px 10px 20px;border-bottom:1px solid var(--line);flex-shrink:0;}
+.sh-head h2{flex:1;margin:0;font-size:18px;font-weight:700;}
+.sh-body{overflow-y:auto;padding:6px 18px 24px;-webkit-overflow-scrolling:touch;}
+.sec{margin-top:18px;}
+.sec h3{margin:0 0 8px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);font-weight:700;}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;}
+.row .sub{display:block;font-size:12px;color:var(--muted);margin-top:2px;}
+.sw{position:relative;width:48px;height:28px;border-radius:14px;background:#3a444b;flex-shrink:0;transition:background .2s;}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s;}
+.sw.on{background:var(--accent);}
+.sw.on::after{transform:translateX(20px);}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 0 4px;}
+.chip{padding:11px 4px;border-radius:12px;background:var(--chip);font-size:13px;text-align:center;border:1.5px solid transparent;line-height:1.25;}
+.chip.on{border-color:var(--accent);background:#2a2421;}
+.chip .n{display:block;font-size:10px;color:var(--muted);margin-bottom:2px;}
+.dis{opacity:.4;pointer-events:none;}
+.slider{padding:12px 0 6px;border-bottom:1px solid var(--line);}
+.slider label{display:flex;justify-content:space-between;font-size:15px;margin-bottom:6px;}
+.slider label span{color:var(--muted);font-size:13px;}
+input[type=range]{width:100%;accent-color:var(--accent);height:28px;margin:0;}
+.sw8{display:flex;flex-wrap:wrap;gap:10px;padding:10px 0 12px;}
+.sw8 button{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.15);position:relative;}
+.sw8 button.on{border-color:#fff;box-shadow:0 0 0 2px var(--accent);}
+.sw8 .cust{background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red);overflow:hidden;}
+.sw8 .cust input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;}
+.bgs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 0;}
+.bgt{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;border:2px solid transparent;background:#222 center/cover no-repeat;font-size:12px;font-weight:600;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;text-shadow:0 1px 4px #000;}
+.bgt.on{border-color:var(--accent);}
+.bgt.add{border:2px dashed rgba(255,255,255,.25);background:#161d21;align-items:center;flex-direction:column;gap:6px;padding:0;color:var(--muted);}
+.bgt .x{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6);font-size:14px;line-height:24px;}
+.note{font-size:12px;color:var(--muted);line-height:1.5;padding:4px 0 8px;}
+.btnrow{display:flex;gap:10px;padding:14px 0 4px;}
+.btn{flex:1;padding:13px 10px;border-radius:12px;background:var(--chip);font-size:14px;font-weight:600;}
+.btn.ok{background:var(--accent);color:#fff;}
+.btn.danger{background:#5a2420;color:#ffb4a8;}
+
+/* list */
+.zr{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);}
+.zr.sel{background:rgba(255,106,61,.08);border-radius:12px;}
+.zr .bd{min-width:52px;height:32px;padding:0 10px;border-radius:16px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;}
+.zr.sel .bd{background:var(--accent);}
+.zr .nm{flex:1;min-width:0;}
+.zr .nm b{display:block;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.zr .nm span{display:block;font-family:Amiri,serif;font-size:17px;color:var(--muted);direction:rtl;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.zr .ed{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);}
+.zr .ed:active{background:rgba(255,255,255,.08);}
+
+/* dialog */
+.dlgb{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;}
+.dlgb.show{display:flex;}
+.dlg{background:var(--sheet);border:1px solid var(--line);border-radius:18px;padding:20px;width:min(92vw,380px);max-height:88vh;overflow-y:auto;}
+.dlg h3{margin:0 0 12px;font-size:18px;}
+.dlg p{margin:0 0 12px;font-size:14px;line-height:1.55;color:#cdd5da;}
+.dlg label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px;}
+.dlg input[type=text],.dlg input[type=number]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0a0e10;color:#fff;font:inherit;font-size:16px;user-select:text;-webkit-user-select:text;}
+.dlg input.arin{font-family:Amiri,serif;font-size:20px;direction:rtl;}
+.tg{display:flex;gap:6px;flex-wrap:wrap;}
+.tg .chip{flex:1;min-width:52px;padding:9px 4px;}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div id="shade"></div>
+<div id="tap"></div>
+<canvas id="beads"></canvas>
+
+<header class="top">
+  <button class="ib" id="listBtn" aria-label="Zikrlar"></button>
+  <div class="sp"></div>
+  <button class="ib" id="undoBtn" aria-label="Bekor qilish"></button>
+  <button class="ib" id="setBtn" aria-label="Sozlamalar"></button>
+</header>
+
+<section class="zikr">
+  <div class="ar" id="ar"></div>
+  <div class="sep"><i></i></div>
+  <div class="lat" id="lat"></div>
+  <div class="tr" id="tr"></div>
+</section>
+
+<div class="counter" id="counter">
+  <svg viewBox="0 0 112 112">
+    <circle cx="56" cy="56" r="48" fill="rgba(0,0,0,.28)" stroke="rgba(255,255,255,.14)" stroke-width="4"/>
+    <circle id="ring" cx="56" cy="56" r="48" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" style="transition:stroke-dashoffset .25s"/>
+  </svg>
+  <div class="num"><b id="num">0</b><small id="of"></small></div>
+  <div class="laps" id="laps"></div>
+</div>
+
+<div id="done">
+  <div class="dn" id="dnum"></div>
+  <div class="dar">تَقَبَّلَ ٱللَّٰهُ مِنَّا وَمِنكُمْ</div>
+  <div class="duz">Alloh bizdan ham, sizdan ham qabul qilsin</div>
+  <div class="dh">Davom etish uchun bosing</div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="listSheet">
+  <div class="sh-head"><h2>Zikrlar</h2><button class="ib" data-close aria-label="Yopish"></button></div>
+  <div class="sh-body" id="listBody"></div>
+</div>
+<div class="sheet" id="setSheet">
+  <div class="sh-head"><h2>Sozlamalar</h2><button class="ib" data-close aria-label="Yopish"></button></div>
+  <div class="sh-body" id="setBody"></div>
+</div>
+<div class="dlgb" id="dlgb"><div class="dlg" id="dlg"></div></div>
+<input type="file" id="imgIn" accept="image/*" style="display:none">
+<input type="file" id="jsonIn" accept="application/json,.json" style="display:none">
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const uid = () => 'z' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+
+/* ================= ICONS ================= */
+const S = d => `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const IC = {
+  list: S('<circle cx="5" cy="6" r="1.2" fill="currentColor"/><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="5" cy="18" r="1.2" fill="currentColor"/><path d="M10 6h10M10 12h10M10 18h10"/>'),
+  undo: S('<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>'),
+  set: S('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
+  close: S('<path d="M6 6l12 12M18 6L6 18"/>'),
+  dots: S('<circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/>'),
+  img: S('<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>')
+};
+$('#listBtn').innerHTML = IC.list; $('#undoBtn').innerHTML = IC.undo; $('#setBtn').innerHTML = IC.set;
+document.querySelectorAll('[data-close]').forEach(b => b.innerHTML = IC.close);
+
+/* ================= DATA ================= */
+const PRESETS = [
+  ['Subhanalloh','سُبْحَانَ ٱللَّٰهِ','Alloh barcha nuqsonlardan pokdir',33],
+  ['Alhamdulillah','ٱلْحَمْدُ لِلَّٰهِ','Allohga hamd bo‘lsin',33],
+  ['Allohu akbar','ٱللَّٰهُ أَكْبَرُ','Alloh buyukdir',33],
+  ["Astag'firulloh",'أَسْتَغْفِرُ ٱللَّٰهَ','Allohdan mag‘firat so‘rayman',100],
+  ['La ilaha illalloh','لَا إِلَٰهَ إِلَّا ٱللَّٰهُ','Allohdan o‘zga iloh yo‘q',100],
+  ['Salovat','ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ','Allohim, Muhammadga salovot yo‘lla',100],
+  ['La havla va la quvvata illa billah','لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّٰهِ','Kuch-quvvat faqat Alloh bilandir',100],
+  ['Subhanallohi va bihamdihi','سُبْحَانَ ٱللَّٰهِ وَبِحَمْدِهِ','Allohni hamd bilan poklab yod etaman',100]
+];
+const DEF_SET = { tapSound:true, sfx:0, volume:.7, sig:true, sigType:0, doneSound:true, music:false, vibrate:true,
+  beadColor:'#8fc3cc', accentColor:'#ff6a3d', beadSize:1, bg:'koinot', blur:0, dark:.15, motion:true, wake:true };
+const KEY = 'tasbeh-v1';
+let st;
+try{ st = JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+if(!st || !Array.isArray(st.zikrs)){
+  st = { zikrs: PRESETS.map(p => ({id:uid(), name:p[0], ar:p[1], tr:p[2], target:p[3], count:0})), sel:null, set:{} };
+}
+st.set = Object.assign({}, DEF_SET, st.set || {});
+if(!st.zikrs.some(z => z.id === st.sel)) st.sel = st.zikrs[0] ? st.zikrs[0].id : null;
+const S_ = st.set;
+let saveT = 0;
+function save(now){
+  clearTimeout(saveT);
+  const f = () => { try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} };
+  now ? f() : (saveT = setTimeout(f, 150));
+}
+window.addEventListener('pagehide', () => save(true));
+document.addEventListener('visibilitychange', () => { if(document.hidden) save(true); });
+const cur = () => st.zikrs.find(z => z.id === st.sel);
+let history = [];
+
+/* ================= AUDIO ================= */
+let ac = null, master = null, noiseBuf = null, musicNodes = null;
+function audio(){
+  if(!ac){
+    const C = window.AudioContext || window.webkitAudioContext; if(!C) return null;
+    ac = new C(); master = ac.createGain(); master.gain.value = S_.volume; master.connect(ac.destination);
+    noiseBuf = ac.createBuffer(1, ac.sampleRate * 1, ac.sampleRate);
+    const d = noiseBuf.getChannelData(0); for(let i=0;i<d.length;i++) d[i] = Math.random()*2-1;
+  }
+  if(ac.state === 'suspended') ac.resume();
+  return ac;
+}
+function tone(t, f, dur, peak, o){
+  o = o || {};
+  const osc = ac.createOscillator(), g = ac.createGain();
+  osc.type = o.type || 'sine';
+  osc.frequency.setValueAtTime(f, t);
+  if(o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + (o.glide || dur*.6));
+  const a = o.attack || .002;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(peak, t + a);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + a + dur);
+  osc.connect(g); g.connect(o.out || master);
+  osc.start(t); osc.stop(t + a + dur + .05);
+}
+function noise(t, dur, peak, type, freq, Q){
+  const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+  s.buffer = noiseBuf; f.type = type; f.frequency.value = freq; f.Q.value = Q || 1;
+  g.gain.setValueAtTime(peak, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  s.connect(f); f.connect(g); g.connect(master);
+  s.start(t, Math.random()*.5); s.stop(t + dur + .02);
+}
+const SFX = [
+  ['Yog‘och', t => { noise(t,.05,.7,'bandpass',2200,3); tone(t,1100,.06,.25,{to:880}); }],
+  ['Shisha', t => { tone(t,2637,.25,.22); tone(t,3951,.18,.1); noise(t,.02,.2,'highpass',5000); }],
+  ['Tosh', t => { noise(t,.06,.9,'lowpass',900); tone(t,320,.07,.4,{to:250}); }],
+  ['Metall', t => { tone(t,1480,.35,.14); tone(t,2350,.25,.09); tone(t,3720,.18,.06); noise(t,.012,.2,'highpass',6000); }],
+  ['Tomchi', t => { tone(t,1500,.09,.45,{to:480,glide:.07}); }],
+  ['Pufak', t => { tone(t,720,.06,.6,{to:180,glide:.05}); }],
+  ['Qo‘ng‘iroqcha', t => { tone(t,2093,.6,.16); tone(t,4186,.35,.05); tone(t,3143,.45,.04); }],
+  ['Kristall', t => { tone(t,3136,.35,.11,{type:'triangle'}); tone(t,4699,.25,.07,{type:'triangle'}); tone(t,6272,.15,.03); }],
+  ['Bambuk', t => { noise(t,.09,.9,'bandpass',1300,8); tone(t,650,.08,.25); }],
+  ['Mexanik', t => { noise(t,.012,.7,'highpass',3000); noise(t+.028,.012,.45,'highpass',3500); tone(t,180,.015,.05,{type:'square'}); }],
+  ['Marimba', t => { tone(t,523,.4,.4); tone(t,2093,.06,.12); }],
+  ['Chuqur', t => { tone(t,140,.18,.7,{to:70,glide:.15}); noise(t,.03,.4,'lowpass',400); }]
+];
+const SIGS = [
+  ['Qo‘ng‘iroq', t => { [1,2,2.76,5.4].forEach((m,i) => tone(t, 880*m, 1.6 - i*.3, [.25,.12,.08,.04][i])); }],
+  ['Gong', t => { [110,147.3,220.6,293.1].forEach((f,i) => tone(t, f, 2.4 - i*.4, [.35,.18,.12,.06][i], {attack:.02})); }],
+  ['Ikki nota', t => { tone(t,784,.5,.25,{type:'triangle'}); tone(t+.16,1175,.7,.25,{type:'triangle'}); }]
+];
+function playDone(t){ [523.25,659.25,783.99,1046.5].forEach((f,i) => tone(t + i*.12, f, 1.8, .16, {type:'triangle', attack:.01})); }
+function play(fn){ if(!audio()) return; try{ fn(ac.currentTime + .005); }catch(e){} }
+function setVolume(){ if(master) master.gain.setTargetAtTime(S_.volume, ac.currentTime, .05); }
+
+function musicOn(){
+  if(!audio() || musicNodes) return;
+  const out = ac.createGain(); out.gain.value = 0.0001; out.connect(master);
+  const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700; lp.connect(out);
+  const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = .07; lg.gain.value = 300; lfo.connect(lg); lg.connect(lp.frequency); lfo.start();
+  const oscs = [[110,0],[164.81,3],[220,-4],[329.63,5]].map(([f,d],i) => {
+    const o = ac.createOscillator(), g = ac.createGain(); o.type = i % 2 ? 'triangle' : 'sine';
+    o.frequency.value = f; o.detune.value = d; g.gain.value = [.5,.3,.25,.1][i]; o.connect(g); g.connect(lp); o.start(); return o;
+  });
+  const n = ac.createBufferSource(); n.buffer = noiseBuf; n.loop = true;
+  const nf = ac.createBiquadFilter(); nf.type = 'lowpass'; nf.frequency.value = 350; const ng = ac.createGain(); ng.gain.value = .25;
+  n.connect(nf); nf.connect(ng); ng.connect(out); n.start();
+  out.gain.exponentialRampToValueAtTime(.09, ac.currentTime + 3);
+  musicNodes = { out, stop: [lfo, n, ...oscs] };
+}
+function musicOff(){
+  if(!musicNodes) return; const m = musicNodes; musicNodes = null;
+  m.out.gain.setTargetAtTime(0.0001, ac.currentTime, .5);
+  setTimeout(() => m.stop.forEach(o => { try{ o.stop(); }catch(e){} }), 2500);
+}
+function vib(p){ if(S_.vibrate && navigator.vibrate) try{ navigator.vibrate(p); }catch(e){} }
+
+/* ================= BACKGROUND ================= */
+const bgc = $('#bg'), bx = bgc.getContext('2d');
+let W = 0, H = 0, DPR = 1, staticLayer = null, bgImg = null, bgStars = [], planets = [], shoot = null, lastBg = 0;
+// O'zingiz bergan fon rasmlari shu ro'yxatga qo'shiladi: bg/ papkasidagi fayl nomlari
+const BG_FILES = [];
+const BUILTIN = [['koinot','Koinot'],['tun','Tun'],['qora','Qora']];
+
+function rnd(a,b){ return a + Math.random()*(b-a); }
+function resize(){
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  [bgc, bc].forEach(c => { c.width = Math.round(W*DPR); c.height = Math.round(H*DPR); });
+  bx.setTransform(DPR,0,0,DPR,0,0); bctx.setTransform(DPR,0,0,DPR,0,0);
+  buildStatic(); buildCurve(); layoutText(); drawBg(performance.now(), true); dirty = true;
+}
+function buildStatic(){
+  staticLayer = document.createElement('canvas');
+  staticLayer.width = bgc.width; staticLayer.height = bgc.height;
+  const c = staticLayer.getContext('2d'); c.setTransform(DPR,0,0,DPR,0,0);
+  const m = S_.bg;
+  bgStars = []; planets = [];
+  if(m === 'koinot'){
+    c.fillStyle = '#0c1519'; c.fillRect(0,0,W,H);
+    c.filter = `blur(${Math.round(Math.min(W,H)*.09)}px)`;
+    const blob = (x,y,r,col) => { const g = c.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,col); g.addColorStop(1,'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(x-r,y-r,r*2,r*2); };
+    let seed = 7; const R = () => (seed = (seed*9301+49297)%233280)/233280;
+    for(let i=0;i<9;i++) blob(R()*W, R()*H*.8, rnd(.3,.6)*W, `rgba(60,${105+R()*30|0},${115+R()*25|0},.62)`);
+    for(let i=0;i<14;i++){ const k = i/13; blob(W*(-.1+k*1.2) + rnd(-30,30), H*(.62-k*.42) + rnd(-40,40), rnd(.18,.32)*W, `rgba(${140+R()*40|0},${70+R()*30|0},${45+R()*20|0},.58)`); }
+    for(let i=0;i<8;i++){ const k = i/7; blob(W*(-.05+k*1.1), H*(.6-k*.4), rnd(.06,.12)*W, 'rgba(15,12,12,.55)'); }
+    blob(W*.5, H*.92, W*.7, 'rgba(170,85,50,.45)');
+    c.filter = 'none';
+    for(let i=0;i<Math.round(W*H/900);i++){ c.fillStyle = `rgba(255,255,255,${rnd(.15,.7)})`; c.fillRect(Math.random()*W, Math.random()*H, rnd(.5,1.3), rnd(.5,1.3)); }
+    for(let i=0;i<45;i++) bgStars.push({x:Math.random()*W, y:Math.random()*H*.85, r:rnd(.6,1.6), p:Math.random()*6.28, s:rnd(.6,2)});
+    const cols = ['#c9a27a','#e0b48c','#9bb7c4','#d27b52','#b0b9bf','#e6c79c'];
+    for(let i=0;i<7;i++) planets.push({o:i, a:Math.random()*6.28, sp:rnd(.04,.12)/(1+i*.4), r:[3,4,5.5,7,4.5,8,3.5][i], col:cols[i%cols.length], ring:i===5||i===3});
+  } else if(m === 'tun'){
+    const g = c.createLinearGradient(0,0,0,H); g.addColorStop(0,'#05081a'); g.addColorStop(.55,'#141c42'); g.addColorStop(1,'#3a2440');
+    c.fillStyle = g; c.fillRect(0,0,W,H);
+    const h = c.createRadialGradient(W*.5,H*1.05,0,W*.5,H*1.05,H*.55); h.addColorStop(0,'rgba(255,140,90,.35)'); h.addColorStop(1,'rgba(0,0,0,0)'); c.fillStyle = h; c.fillRect(0,0,W,H);
+    for(let i=0;i<Math.round(W*H/700);i++){ c.fillStyle = `rgba(255,255,255,${rnd(.15,.8)})`; c.fillRect(Math.random()*W, Math.random()*H*.8, rnd(.5,1.4), rnd(.5,1.4)); }
+    for(let i=0;i<50;i++) bgStars.push({x:Math.random()*W, y:Math.random()*H*.75, r:rnd(.6,1.8), p:Math.random()*6.28, s:rnd(.6,2)});
+    // hilol
+    const mx = W*.86, my = H*.3, mr = Math.min(W,H)*.045;
+    const gl = c.createRadialGradient(mx,my,mr*.5,mx,my,mr*4); gl.addColorStop(0,'rgba(255,240,200,.22)'); gl.addColorStop(1,'rgba(0,0,0,0)'); c.fillStyle = gl; c.fillRect(mx-mr*4,my-mr*4,mr*8,mr*8);
+    const mc = document.createElement('canvas'); mc.width = mc.height = Math.ceil(mr*2*DPR) + 4;
+    const m2 = mc.getContext('2d'); m2.scale(DPR, DPR); const o = mr + 2/DPR;
+    m2.fillStyle = '#fff4d6'; m2.beginPath(); m2.arc(o,o,mr,0,7); m2.fill();
+    m2.globalCompositeOperation = 'destination-out'; m2.beginPath(); m2.arc(o+mr*.42,o-mr*.22,mr*.88,0,7); m2.fill();
+    c.drawImage(mc, mx - o, my - o, mc.width/DPR, mc.height/DPR);
+    // tepaliklar
+    c.fillStyle = '#0a0b1a'; c.beginPath(); c.moveTo(0,H);
+    for(let x=0;x<=W;x+=8) c.lineTo(x, H*.9 - Math.sin(x/W*3.1+.6)*H*.035 - Math.sin(x/W*9)*H*.008);
+    c.lineTo(W,H); c.fill();
+  } else if(m === 'qora'){
+    c.fillStyle = '#050607'; c.fillRect(0,0,W,H);
+    const v = c.createRadialGradient(W/2,H*.55,0,W/2,H*.55,H*.7); v.addColorStop(0,'rgba(40,60,70,.35)'); v.addColorStop(1,'rgba(0,0,0,0)'); c.fillStyle = v; c.fillRect(0,0,W,H);
+  } else if(bgImg && bgImg.complete && bgImg.naturalWidth){
+    const s = Math.max(W/bgImg.naturalWidth, H/bgImg.naturalHeight), iw = bgImg.naturalWidth*s, ih = bgImg.naturalHeight*s;
+    c.drawImage(bgImg, (W-iw)/2, (H-ih)/2, iw, ih);
+  } else { c.fillStyle = '#0c1519'; c.fillRect(0,0,W,H); }
+}
+function drawBg(now, force){
+  const animated = S_.motion && (S_.bg === 'koinot' || S_.bg === 'tun');
+  if(!force && (!animated || now - lastBg < 33)) return;
+  lastBg = now;
+  bx.drawImage(staticLayer, 0, 0, W, H);
+  const t = now/1000;
+  if(S_.bg === 'koinot' || S_.bg === 'tun'){
+    for(const s of bgStars){
+      const a = .35 + .65*Math.abs(Math.sin(t*s.s + s.p));
+      bx.fillStyle = `rgba(255,255,255,${a})`; bx.beginPath(); bx.arc(s.x, s.y, s.r, 0, 7); bx.fill();
+    }
+    if(S_.motion){
+      if(!shoot && Math.random() < .004) shoot = {x:rnd(W*.2,W), y:rnd(0,H*.4), vx:-rnd(5,8), vy:rnd(2,3.5), life:1};
+      if(shoot){
+        const s = shoot; s.x += s.vx; s.y += s.vy; s.life -= .025;
+        const g = bx.createLinearGradient(s.x, s.y, s.x - s.vx*12, s.y - s.vy*12);
+        g.addColorStop(0, `rgba(255,255,255,${s.life})`); g.addColorStop(1,'rgba(255,255,255,0)');
+        bx.strokeStyle = g; bx.lineWidth = 1.4; bx.beginPath(); bx.moveTo(s.x,s.y); bx.lineTo(s.x - s.vx*12, s.y - s.vy*12); bx.stroke();
+        if(s.life <= 0) shoot = null;
+      }
+    }
+  }
+  if(S_.bg === 'koinot') drawSolar(t);
+}
+function drawSolar(t){
+  const cx = W*.5, cy = H*.915, base = Math.min(W*.9, H*.5);
+  bx.save();
+  bx.strokeStyle = 'rgba(255,255,255,.07)'; bx.lineWidth = 1;
+  const orb = i => base*(.14 + i*.075);
+  for(let i=0;i<7;i++){ bx.beginPath(); bx.ellipse(cx, cy, orb(i), orb(i)*.2, 0, 0, 7); bx.stroke(); }
+  const pos = planets.map(p => { const a = p.a + t*p.sp; return {p, x: cx + Math.cos(a)*orb(p.o), y: cy + Math.sin(a)*orb(p.o)*.2, back: Math.sin(a) < 0}; });
+  const drawP = q => {
+    const g = bx.createRadialGradient(q.x - q.p.r*.4, q.y - q.p.r*.4, 0, q.x, q.y, q.p.r);
+    g.addColorStop(0,'#fff'); g.addColorStop(.25,q.p.col); g.addColorStop(1,'#1a1a1a');
+    if(q.p.ring){ bx.strokeStyle = 'rgba(230,210,180,.7)'; bx.lineWidth = 1.2; bx.beginPath(); bx.ellipse(q.x,q.y,q.p.r*2.1,q.p.r*.6,-.3,0,7); bx.stroke(); }
+    bx.fillStyle = g; bx.beginPath(); bx.arc(q.x, q.y, q.p.r, 0, 7); bx.fill();
+  };
+  pos.filter(q => q.back).forEach(drawP);
+  // quyosh
+  const sr = base*.07;
+  bx.globalCompositeOperation = 'lighter';
+  const halo = bx.createRadialGradient(cx,cy,0,cx,cy,sr*7); halo.addColorStop(0,'rgba(255,120,60,.55)'); halo.addColorStop(.3,'rgba(255,90,40,.18)'); halo.addColorStop(1,'rgba(0,0,0,0)');
+  bx.fillStyle = halo; bx.fillRect(cx-sr*7, cy-sr*7, sr*14, sr*14);
+  bx.save(); bx.translate(cx,cy); bx.rotate(t*.05);
+  for(let i=0;i<10;i++){
+    bx.rotate(Math.PI*2/10);
+    const L = sr*(5 + Math.sin(t*.6 + i)*1.2);
+    const g = bx.createLinearGradient(0,0,0,-L); g.addColorStop(0,'rgba(255,150,90,.18)'); g.addColorStop(1,'rgba(255,150,90,0)');
+    bx.fillStyle = g; bx.beginPath(); bx.moveTo(-sr*.35,0); bx.lineTo(0,-L); bx.lineTo(sr*.35,0); bx.fill();
+  }
+  bx.restore();
+  bx.globalCompositeOperation = 'source-over';
+  const sg = bx.createRadialGradient(cx - sr*.3, cy - sr*.3, 0, cx, cy, sr);
+  sg.addColorStop(0,'#fff6ea'); sg.addColorStop(.35,'#ff9a5a'); sg.addColorStop(1,'#e2451c');
+  bx.fillStyle = sg; bx.beginPath(); bx.arc(cx, cy, sr, 0, 7); bx.fill();
+  pos.filter(q => !q.back).forEach(drawP);
+  bx.restore();
+}
+function applyBgFx(){
+  bgc.style.filter = S_.blur ? `blur(${S_.blur}px)` : '';
+  bgc.style.transform = S_.blur ? `scale(${1 + S_.blur/120})` : '';
+  $('#shade').style.opacity = S_.dark;
+}
+/* Rasmlar: bg/ fayllari yoki telefondan yuklangan (IndexedDB) */
+function idb(){ return new Promise((res, rej) => { const r = indexedDB.open('tasbeh', 1); r.onupgradeneeded = () => r.result.createObjectStore('img'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function idbGet(k){ const d = await idb(); return new Promise(res => { const q = d.transaction('img').objectStore('img').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(null); }); }
+async function idbSet(k, v){ const d = await idb(); return new Promise(res => { const tx = d.transaction('img','readwrite'); v == null ? tx.objectStore('img').delete(k) : tx.objectStore('img').put(v, k); tx.oncomplete = res; tx.onerror = res; }); }
+let customUrl = null;
+async function loadCustom(){
+  try{ const b = await idbGet('custom'); if(customUrl) URL.revokeObjectURL(customUrl); customUrl = b ? URL.createObjectURL(b) : null; }catch(e){ customUrl = null; }
+}
+function setBg(id){
+  S_.bg = id; save();
+  bgImg = null;
+  const src = id === 'custom' ? customUrl : (id.startsWith('file:') ? 'bg/' + id.slice(5) : null);
+  if(src){
+    bgImg = new Image(); bgImg.onload = () => { buildStatic(); drawBg(performance.now(), true); }; bgImg.src = src;
+  }
+  buildStatic(); drawBg(performance.now(), true);
+}
+
+/* ================= BEADS ================= */
+const bc = $('#beads'), bctx = bc.getContext('2d');
+let curve = null, cyBead = 0, dirty = true, anim = null, displayPos = 0, plusOnes = [], pulse = 0;
+function buildCurve(){
+  cyBead = H*.5;
+  const D = Math.min(H*.09, W*.25), Wc = W*.4, pts = [];
+  let len = 0, px = null, py = null;
+  for(let x = -W*.75; x <= W*.75; x += 2){
+    const y = cyBead - D*(1 - Math.exp(-(x/Wc)*(x/Wc)*1.5));
+    if(px !== null) len += Math.hypot(x - px, y - py);
+    pts.push({x: W/2 + x, y, s: len}); px = x; py = y;
+  }
+  const mid = pts.reduce((a,p) => Math.abs(p.x - W/2) < Math.abs(a.x - W/2) ? p : a, pts[0]);
+  curve = {pts, s0: mid.s, total: len};
+}
+function pointAt(s){
+  const p = curve.pts; if(s <= 0) return p[0]; if(s >= curve.total) return p[p.length-1];
+  let lo = 0, hi = p.length - 1;
+  while(hi - lo > 1){ const m = (lo + hi) >> 1; p[m].s < s ? lo = m : hi = m; }
+  const a = p[lo], b = p[hi], k = (s - a.s)/(b.s - a.s || 1);
+  return {x: a.x + (b.x - a.x)*k, y: a.y + (b.y - a.y)*k};
+}
+function hex2rgb(h){ h = h.replace('#',''); if(h.length === 3) h = h.split('').map(c => c+c).join(''); const n = parseInt(h,16); return [n>>16&255, n>>8&255, n&255]; }
+function mix(c, t, k){ return c.map((v,i) => Math.round(v + (t[i]-v)*k)); }
+const rgb = a => `rgb(${a[0]},${a[1]},${a[2]})`;
+const sprites = {};
+function sprite(col){
+  if(sprites[col]) return sprites[col];
+  const R = 64, cv = document.createElement('canvas'); cv.width = cv.height = R*2 + 8;
+  const c = cv.getContext('2d'), base = hex2rgb(col), cx = R + 4;
+  const g = c.createRadialGradient(cx - R*.35, cx - R*.4, R*.05, cx, cx, R);
+  g.addColorStop(0, rgb(mix(base,[255,255,255],.85)));
+  g.addColorStop(.28, rgb(mix(base,[255,255,255],.3)));
+  g.addColorStop(.72, rgb(base));
+  g.addColorStop(1, rgb(mix(base,[0,0,0],.55)));
+  c.fillStyle = g; c.beginPath(); c.arc(cx, cx, R, 0, 7); c.fill();
+  const r2 = c.createRadialGradient(cx + R*.25, cx + R*.45, 0, cx + R*.25, cx + R*.45, R*.5);
+  r2.addColorStop(0,'rgba(255,255,255,.22)'); r2.addColorStop(1,'rgba(255,255,255,0)');
+  c.fillStyle = r2; c.beginPath(); c.arc(cx, cx, R, 0, 7); c.fill();
+  c.fillStyle = 'rgba(255,255,255,.75)'; c.beginPath(); c.ellipse(cx - R*.38, cx - R*.42, R*.16, R*.1, -.6, 0, 7); c.fill();
+  return sprites[col] = cv;
+}
+function drawBeads(now){
+  const z = cur();
+  const c = bctx; c.clearRect(0,0,W,H);
+  if(!z || !curve) return;
+  if(anim){
+    const k = clamp((now - anim.t0)/anim.d, 0, 1), e = 1 - Math.pow(1-k, 3);
+    displayPos = anim.from + (anim.to - anim.from)*e;
+    if(k >= 1) anim = null;
+  }
+  const r0 = clamp(W*.026, 9, 17) * S_.beadSize, sp = r0*2.3;
+  const sepEvery = 33, accent = S_.accentColor;
+  // ip
+  c.strokeStyle = 'rgba(255,255,255,.22)'; c.lineWidth = 1.2; c.beginPath();
+  curve.pts.forEach((p,i) => i ? c.lineTo(p.x,p.y) : c.moveTo(p.x,p.y)); c.stroke();
+  // markaz halqasi
+  const ctr = pointAt(curve.s0);
+  const pr = r0*2.6*(1 + pulse*.25);
+  c.strokeStyle = `rgba(255,255,255,${.1 + pulse*.25})`; c.lineWidth = 1;
+  c.beginPath(); c.arc(ctr.x, ctr.y, pr, 0, 7); c.stroke();
+  c.beginPath(); c.arc(ctr.x, ctr.y, pr*1.45, 0, 7); c.strokeStyle = `rgba(255,255,255,${.05 + pulse*.12})`; c.stroke();
+  const glow = c.createRadialGradient(ctr.x, ctr.y, 0, ctr.x, ctr.y, pr*1.6); glow.addColorStop(0,`rgba(255,255,255,${.1 + pulse*.15})`); glow.addColorStop(1,'rgba(255,255,255,0)');
+  c.fillStyle = glow; c.fillRect(ctr.x - pr*2, ctr.y - pr*2, pr*4, pr*4);
+  // donachalar
+  const N = Math.ceil(curve.total/2/sp) + 3, base = Math.round(displayPos);
+  const list = [];
+  for(let j = base - N; j <= base + N; j++){
+    const k = displayPos - j;               // musbat = o'ng tomonda (sanalgan)
+    const scale = 1 + .36*Math.exp(-k*k/1.1);
+    const extra = Math.sign(k)*.45*(1 - Math.exp(-k*k/1.2));
+    const s = curve.s0 + (k + extra)*sp;
+    if(s < -sp || s > curve.total + sp) continue;
+    const p = pointAt(s);
+    const isTarget = z.target > 0 && j === z.target;
+    const isSep = j > 0 && j % sepEvery === 0;
+    list.push({p, r: r0*scale*(isTarget ? 1.15 : 1), col: (isSep || isTarget) ? accent : S_.beadColor, glow: isSep || isTarget, target: isTarget});
+  }
+  for(const b of list){
+    if(b.glow){
+      const g = c.createRadialGradient(b.p.x, b.p.y, 0, b.p.x, b.p.y, b.r*2.6); g.addColorStop(0, hexA(accent,.45)); g.addColorStop(1, hexA(accent,0));
+      c.fillStyle = g; c.fillRect(b.p.x - b.r*3, b.p.y - b.r*3, b.r*6, b.r*6);
+    }
+    if(b.target){ // shokila
+      c.fillStyle = hexA(accent,.85); c.beginPath(); c.moveTo(b.p.x - b.r*.25, b.p.y + b.r*.9); c.lineTo(b.p.x + b.r*.25, b.p.y + b.r*.9); c.lineTo(b.p.x + b.r*.55, b.p.y + b.r*2.6); c.lineTo(b.p.x - b.r*.55, b.p.y + b.r*2.6); c.closePath(); c.fill();
+    }
+    c.fillStyle = 'rgba(0,0,0,.28)'; c.beginPath(); c.ellipse(b.p.x + b.r*.15, b.p.y + b.r*.95, b.r*.8, b.r*.25, 0, 0, 7); c.fill();
+    const sp_ = sprite(b.col), R = b.r*(68/64);
+    c.drawImage(sp_, b.p.x - R, b.p.y - R, R*2, R*2);
+  }
+  // +1
+  plusOnes = plusOnes.filter(o => now - o.t0 < 700);
+  for(const o of plusOnes){
+    const k = (now - o.t0)/700;
+    c.globalAlpha = 1 - k; c.fillStyle = '#fff'; c.font = `600 ${Math.round(r0*.95)}px Montserrat, sans-serif`;
+    c.fillText('+1', ctr.x + r0*1.6, ctr.y - r0*1.4 - k*r0*1.5); c.globalAlpha = 1;
+  }
+  if(pulse > 0) pulse = Math.max(0, pulse - .06);
+  dirty = !!anim || plusOnes.length > 0 || pulse > 0;
+}
+function hexA(h, a){ const [r,g,b] = hex2rgb(h); return `rgba(${r},${g},${b},${a})`; }
+
+/* ================= LOOP ================= */
+function loop(now){
+  if(!document.hidden){
+    drawBg(now, false);
+    if(dirty) drawBeads(now);
+  }
+  requestAnimationFrame(loop);
+}
+
+/* ================= UI ================= */
+function layoutText(){
+  const z = cur(), arEl = $('#ar');
+  const len = z && z.ar ? z.ar.replace(/[ً-ٰٟۖ-ۭ]/g,'').length : 0;
+  let fs = Math.min(W*.13, 60);
+  if(len > 14) fs *= .78; if(len > 22) fs *= .8; if(len > 30) fs *= .85;
+  arEl.style.fontSize = Math.round(fs) + 'px';
+}
+function renderZikr(){
+  const z = cur();
+  $('#ar').textContent = z ? (z.ar || '') : '';
+  $('#ar').style.display = z && z.ar ? '' : 'none';
+  $('#lat').textContent = z ? z.name : 'Zikr tanlang';
+  $('#tr').textContent = z ? (z.tr || '') : '';
+  layoutText(); renderCount();
+  displayPos = z ? z.count : 0; anim = null; dirty = true;
+}
+function renderCount(){
+  const z = cur(), n = z ? z.count : 0, T = z ? z.target : 0;
+  $('#num').textContent = n;
+  $('#of').textContent = T ? '/ ' + T : '';
+  let p = 0, laps = 0;
+  if(T){ laps = Math.floor(n / T); p = n === 0 ? 0 : (n % T === 0 ? 1 : (n % T)/T); }
+  $('#ring').style.strokeDashoffset = 301.6*(1 - p);
+  const lp = $('#laps'); lp.style.display = T && laps >= 1 && n % T !== 0 || laps >= 2 ? 'block' : 'none'; lp.textContent = '×' + laps;
+  $('#num').style.fontSize = n >= 10000 ? '26px' : n >= 1000 ? '30px' : '';
+}
+function applyAccent(){ document.documentElement.style.setProperty('--accent', S_.accentColor); }
+
+let doneOpen = 0;
+function count(){
+  const z = cur(); if(!z) return;
+  if(doneOpen){ if(performance.now() - doneOpen > 600) closeDone(); return; }
+  history.push({id: z.id, count: z.count}); if(history.length > 300) history.shift();
+  z.count++;
+  const from = anim ? displayPos : z.count - 1;
+  anim = {from, to: z.count, t0: performance.now(), d: 260};
+  plusOnes.push({t0: performance.now()}); pulse = 1; dirty = true;
+  const hitTarget = z.target > 0 && z.count % z.target === 0;
+  const hitSig = z.count % 33 === 0;
+  if(hitTarget){
+    if(S_.doneSound) play(playDone); else if(S_.tapSound) play(SFX[S_.sfx][1]);
+    vib([60,80,60,80,200]);
+    if(z.count === z.target || z.count % z.target === 0) openDone(z.count);
+  } else if(hitSig){
+    if(S_.sig) play(SIGS[S_.sigType][1]); else if(S_.tapSound) play(SFX[S_.sfx][1]);
+    vib([90,60,90]);
+  } else {
+    if(S_.tapSound) play(SFX[S_.sfx][1]);
+    vib(12);
+  }
+  renderCount(); save();
+}
+function openDone(n){ $('#dnum').textContent = n; $('#done').classList.add('show'); doneOpen = performance.now(); }
+function closeDone(){ $('#done').classList.remove('show'); doneOpen = 0; }
+$('#done').addEventListener('pointerdown', () => { if(performance.now() - doneOpen > 600) closeDone(); });
+
+const tap = $('#tap');
+tap.addEventListener('pointerdown', e => { if(e.button > 0) return; e.preventDefault(); count(); });
+tap.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => { if((e.key === ' ' || e.key === 'Enter') && !anyOpen()) { e.preventDefault(); count(); } });
+
+$('#undoBtn').addEventListener('click', () => {
+  const h = history.pop(); if(!h) return;
+  const z = st.zikrs.find(x => x.id === h.id); if(!z) return;
+  if(st.sel !== z.id){ st.sel = z.id; renderZikr(); }
+  const from = displayPos; z.count = h.count;
+  anim = {from, to: z.count, t0: performance.now(), d: 260}; dirty = true;
+  renderCount(); save(); vib(8);
+});
+
+/* ----- sheets ----- */
+const scrim = $('#scrim');
+function openSheet(id){ document.querySelectorAll('.sheet').forEach(s => s.classList.remove('show')); $(id).classList.add('show'); scrim.classList.add('show'); }
+function closeSheets(){ document.querySelectorAll('.sheet').forEach(s => s.classList.remove('show')); scrim.classList.remove('show'); }
+const anyOpen = () => !!document.querySelector('.sheet.show') || $('#dlgb').classList.contains('show');
+scrim.addEventListener('click', closeSheets);
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeSheets));
+$('#listBtn').addEventListener('click', () => { renderList(); openSheet('#listSheet'); });
+$('#setBtn').addEventListener('click', () => { renderSettings(); openSheet('#setSheet'); });
+
+/* ----- dialogs ----- */
+const dlgb = $('#dlgb'), dlg = $('#dlg');
+function openDlg(html, wire){ dlg.innerHTML = html; dlgb.classList.add('show'); if(wire) wire(dlg); }
+function closeDlg(){ dlgb.classList.remove('show'); dlg.innerHTML = ''; }
+dlgb.addEventListener('click', e => { if(e.target === dlgb) closeDlg(); });
+function confirmDlg(title, text, ok, cb, danger = true){
+  openDlg(`<h3>${esc(title)}</h3><p>${text}</p><div class="btnrow"><button class="btn" data-x>Bekor</button><button class="btn ${danger ? 'danger' : 'ok'}" data-ok>${esc(ok)}</button></div>`, d => {
+    d.querySelector('[data-x]').onclick = closeDlg;
+    d.querySelector('[data-ok]').onclick = () => { closeDlg(); cb(); };
+  });
+}
+
+/* ----- zikr list ----- */
+function renderList(){
+  const b = $('#listBody');
+  b.innerHTML = st.zikrs.map(z => `<div class="zr${z.id === st.sel ? ' sel' : ''}" data-id="${z.id}">
+      <div class="bd">${z.count}</div>
+      <div class="nm"><b>${esc(z.name)}</b>${z.ar ? `<span>${esc(z.ar)}</span>` : ''}</div>
+      <button class="ed" data-ed="${z.id}" aria-label="Tahrirlash">${IC.dots}</button></div>`).join('')
+    + `<div class="btnrow"><button class="btn ok" id="addZ">＋ Yangi zikr</button></div>`;
+  b.querySelectorAll('.zr').forEach(r => r.addEventListener('click', e => {
+    if(e.target.closest('[data-ed]')) return;
+    st.sel = r.dataset.id; save(); renderZikr(); closeSheets();
+  }));
+  b.querySelectorAll('[data-ed]').forEach(x => x.addEventListener('click', () => editZikr(x.dataset.ed)));
+  $('#addZ').onclick = () => editZikr(null);
+}
+function editZikr(id){
+  const z = id ? st.zikrs.find(x => x.id === id) : {name:'', ar:'', tr:'', target:33, count:0};
+  const TG = [0,33,99,100,1000];
+  openDlg(`<h3>${id ? 'Zikrni tahrirlash' : 'Yangi zikr'}</h3>
+    <label>Nomi (lotincha)</label><input type="text" id="fN" value="${esc(z.name)}" placeholder="Masalan: Ya Vadud">
+    <label>Arabcha matn (ixtiyoriy)</label><input type="text" class="arin" id="fA" value="${esc(z.ar)}" placeholder="يَا وَدُودُ">
+    <label>Tarjimasi (ixtiyoriy)</label><input type="text" id="fT" value="${esc(z.tr)}" placeholder="Ma'nosi">
+    <label>Maqsad</label>
+    <div class="tg">${TG.map(v => `<button class="chip${z.target === v ? ' on' : ''}" data-t="${v}">${v || 'Yo‘q'}</button>`).join('')}</div>
+    <input type="number" id="fC" inputmode="numeric" min="1" placeholder="Boshqa son" style="margin-top:8px" value="${z.target && !TG.includes(z.target) ? z.target : ''}">
+    ${id ? `<div class="btnrow"><button class="btn" id="fR">Nolga tushirish</button><button class="btn danger" id="fD">O‘chirish</button></div>` : ''}
+    <div class="btnrow"><button class="btn" data-x>Bekor</button><button class="btn ok" id="fS">Saqlash</button></div>`, d => {
+    let tgt = z.target;
+    d.querySelectorAll('[data-t]').forEach(c => c.onclick = () => { tgt = +c.dataset.t; d.querySelector('#fC').value = ''; d.querySelectorAll('[data-t]').forEach(x => x.classList.toggle('on', x === c)); });
+    d.querySelector('#fC').oninput = e => { const v = parseInt(e.target.value, 10); if(v > 0){ tgt = v; d.querySelectorAll('[data-t]').forEach(x => x.classList.remove('on')); } };
+    d.querySelector('[data-x]').onclick = closeDlg;
+    d.querySelector('#fS').onclick = () => {
+      const name = d.querySelector('#fN').value.trim(); if(!name){ d.querySelector('#fN').focus(); return; }
+      z.name = name; z.ar = d.querySelector('#fA').value.trim(); z.tr = d.querySelector('#fT').value.trim(); z.target = tgt || 0;
+      if(!id){ z.id = uid(); st.zikrs.push(z); st.sel = z.id; }
+      save(); closeDlg(); renderList(); renderZikr();
+    };
+    if(id){
+      d.querySelector('#fR').onclick = () => confirmDlg('Nolga tushirilsinmi?', `<b>${esc(z.name)}</b>: ${z.count} → 0`, 'Nolga', () => {
+        history.push({id: z.id, count: z.count}); z.count = 0; save(); renderList(); renderZikr();
+      });
+      d.querySelector('#fD').onclick = () => confirmDlg('O‘chirilsinmi?', `<b>${esc(z.name)}</b> (${z.count} ta) butunlay o‘chiriladi.`, 'O‘chirish', () => {
+        const i = st.zikrs.indexOf(z); st.zikrs.splice(i, 1); history = history.filter(h => h.id !== z.id);
+        if(st.sel === z.id) st.sel = st.zikrs[Math.min(i, st.zikrs.length - 1)] ? st.zikrs[Math.min(i, st.zikrs.length - 1)].id : null;
+        save(); renderList(); renderZikr();
+      });
+    }
+  });
+}
+
+/* ----- settings ----- */
+const BEAD_COLS = ['#8fc3cc','#e9e4da','#d8b45a','#3fae7a','#4a8fe0','#c94a4a','#8c6bd6','#2b2f36'];
+const ACC_COLS = ['#ff6a3d','#ffc23d','#ff4d6d','#3dd6a0','#3da5ff','#b77dff','#ffffff','#e9e4da'];
+const sw = (k, on) => `<button class="sw${on ? ' on' : ''}" data-sw="${k}" aria-label="${k}"></button>`;
+function swatches(key, list){
+  const v = S_[key], isCust = !list.includes(v);
+  return `<div class="sw8">${list.map(c => `<button data-col="${key}" data-v="${c}" class="${c === v ? 'on' : ''}" style="background:${c}"></button>`).join('')}
+    <button class="cust${isCust ? ' on' : ''}" aria-label="Boshqa rang"><input type="color" data-colin="${key}" value="${v}"></button></div>`;
+}
+function renderSettings(){
+  const b = $('#setBody');
+  const bgTiles = BUILTIN.map(([id, n]) => `<button class="bgt${S_.bg === id ? ' on' : ''}" data-bg="${id}" style="background-image:url(${thumb(id)})">${n}</button>`).join('')
+    + BG_FILES.map((f, i) => `<button class="bgt${S_.bg === 'file:' + f ? ' on' : ''}" data-bg="file:${esc(f)}" style="background-image:url('bg/${esc(f)}')">${i + 1}</button>`).join('')
+    + (customUrl ? `<button class="bgt${S_.bg === 'custom' ? ' on' : ''}" data-bg="custom" style="background-image:url(${customUrl})">Mening rasmim<span class="x" data-rm>×</span></button>` : '')
+    + `<button class="bgt add" id="addImg">${IC.img}<span>Rasm yuklash</span></button>`;
+  b.innerHTML = `
+  <div class="sec"><h3>Tasbeh ovozi</h3>
+    <div class="row"><span>Har bosishda ovoz</span>${sw('tapSound', S_.tapSound)}</div>
+    <div class="grid${S_.tapSound ? '' : ' dis'}" id="sfxGrid">${SFX.map((s, i) => `<button class="chip${S_.sfx === i ? ' on' : ''}" data-sfx="${i}"><span class="n">${i + 1}</span>${s[0]}</button>`).join('')}</div>
+    <div class="slider"><label>Ovoz balandligi <span id="volV">${Math.round(S_.volume*100)}%</span></label><input type="range" min="0" max="100" value="${Math.round(S_.volume*100)}" id="vol"></div>
+  </div>
+  <div class="sec"><h3>Har 33 da signal</h3>
+    <div class="row"><span>Signal<span class="sub">33, 66, 99… ga yetganda</span></span>${sw('sig', S_.sig)}</div>
+    <div class="grid${S_.sig ? '' : ' dis'}">${SIGS.map((s, i) => `<button class="chip${S_.sigType === i ? ' on' : ''}" data-sig="${i}">${s[0]}</button>`).join('')}</div>
+    <div class="row"><span>Maqsadga yetganda ovoz</span>${sw('doneSound', S_.doneSound)}</div>
+    <div class="row"><span>Fon musiqasi<span class="sub">sokin, tinimsiz ohang</span></span>${sw('music', S_.music)}</div>
+    <div class="row"><span>Tebranish</span>${sw('vibrate', S_.vibrate)}</div>
+  </div>
+  <div class="sec"><h3>Donachalar</h3>
+    <div class="row" style="border:0;padding-bottom:0"><span>Rangi</span></div>${swatches('beadColor', BEAD_COLS)}
+    <div class="row" style="border:0;padding-bottom:0"><span>Har 33-chi donacha rangi<span class="sub">ajratuvchi va maqsad donachasi</span></span></div>${swatches('accentColor', ACC_COLS)}
+    <div class="slider"><label>Hajmi <span id="szV">${Math.round(S_.beadSize*100)}%</span></label><input type="range" min="60" max="160" value="${Math.round(S_.beadSize*100)}" id="sz"></div>
+  </div>
+  <div class="sec"><h3>Fon</h3>
+    <div class="bgs">${bgTiles}</div>
+    <div class="note">Telefoningizdagi istalgan rasmni fon qilib qo‘yishingiz mumkin. U faqat shu telefonda saqlanadi.</div>
+    <div class="slider"><label>Xiralashtirish <span id="blV">${S_.blur}px</span></label><input type="range" min="0" max="24" value="${S_.blur}" id="bl"></div>
+    <div class="slider"><label>Qorong‘ilik <span id="dkV">${Math.round(S_.dark*100)}%</span></label><input type="range" min="0" max="85" value="${Math.round(S_.dark*100)}" id="dk"></div>
+    <div class="row"><span>Fon harakati<span class="sub">yulduzlar, sayyoralar (batareyani tejash uchun o‘chiring)</span></span>${sw('motion', S_.motion)}</div>
+  </div>
+  <div class="sec"><h3>Boshqa</h3>
+    <div class="row"><span>Ekran o‘chmasin</span>${sw('wake', S_.wake)}</div>
+    <div class="btnrow"><button class="btn" id="bkOut">Zaxira olish</button><button class="btn" id="bkIn">Zaxiradan tiklash</button></div>
+    <div class="note">Zaxira faylni Telegram’ga saqlab qo‘ying. Telefon tozalansa, sanoqlar shu fayl orqali qaytadi.</div>
+  </div>`;
+
+  b.querySelectorAll('[data-sw]').forEach(el => el.onclick = () => {
+    const k = el.dataset.sw; S_[k] = !S_[k]; el.classList.toggle('on', S_[k]); save();
+    if(k === 'tapSound') $('#sfxGrid').classList.toggle('dis', !S_.tapSound);
+    if(k === 'sig') el.closest('.sec').querySelector('.grid').classList.toggle('dis', !S_.sig);
+    if(k === 'music') S_.music ? musicOn() : musicOff();
+    if(k === 'vibrate') vib(40);
+    if(k === 'motion') drawBg(performance.now(), true);
+    if(k === 'wake') wake();
+    if(k === 'sig' && S_.sig) play(SIGS[S_.sigType][1]);
+    if(k === 'doneSound' && S_.doneSound) play(playDone);
+  });
+  b.querySelectorAll('[data-sfx]').forEach(el => el.onclick = () => {
+    S_.sfx = +el.dataset.sfx; save(); play(SFX[S_.sfx][1]);
+    b.querySelectorAll('[data-sfx]').forEach(x => x.classList.toggle('on', x === el));
+  });
+  b.querySelectorAll('[data-sig]').forEach(el => el.onclick = () => {
+    S_.sigType = +el.dataset.sig; save(); play(SIGS[S_.sigType][1]);
+    b.querySelectorAll('[data-sig]').forEach(x => x.classList.toggle('on', x === el));
+  });
+  const slide = (id, lab, fn) => { const r = b.querySelector(id); r.oninput = () => { b.querySelector(lab).textContent = fn(+r.value); save(); }; };
+  slide('#vol', '#volV', v => { S_.volume = v/100; setVolume(); return v + '%'; });
+  b.querySelector('#vol').onchange = () => play(SFX[S_.sfx][1]);
+  slide('#sz', '#szV', v => { S_.beadSize = v/100; dirty = true; return v + '%'; });
+  slide('#bl', '#blV', v => { S_.blur = v; applyBgFx(); return v + 'px'; });
+  slide('#dk', '#dkV', v => { S_.dark = v/100; applyBgFx(); return v + '%'; });
+  b.querySelectorAll('[data-col]').forEach(el => el.onclick = () => setColor(el.dataset.col, el.dataset.v));
+  b.querySelectorAll('[data-colin]').forEach(el => el.oninput = () => setColor(el.dataset.colin, el.value, true));
+  b.querySelectorAll('[data-bg]').forEach(el => el.onclick = e => {
+    if(e.target.closest('[data-rm]')){
+      confirmDlg('Rasm o‘chirilsinmi?', 'Yuklangan fon rasmi o‘chiriladi.', 'O‘chirish', async () => {
+        await idbSet('custom', null); await loadCustom(); if(S_.bg === 'custom') setBg('koinot'); renderSettings();
+      });
+      return;
+    }
+    setBg(el.dataset.bg); b.querySelectorAll('[data-bg]').forEach(x => x.classList.toggle('on', x === el));
+  });
+  $('#addImg').onclick = () => $('#imgIn').click();
+  $('#bkOut').onclick = exportData;
+  $('#bkIn').onclick = () => $('#jsonIn').click();
+}
+function setColor(key, v, fromInput){
+  S_[key] = v; save(); dirty = true;
+  if(key === 'accentColor') applyAccent();
+  const box = document.querySelector(`[data-colin="${key}"]`).closest('.sw8');
+  box.querySelectorAll('button').forEach(x => x.classList.toggle('on', fromInput ? x.classList.contains('cust') : x.dataset.v === v));
+}
+const thumbs = {};
+function thumb(id){
+  if(thumbs[id]) return thumbs[id];
+  const keep = S_.bg, w0 = W, h0 = H, d0 = DPR;
+  W = 120; H = 160; DPR = 1; S_.bg = id;
+  const sl = staticLayer, bs = bgStars, pl = planets;
+  buildStatic();
+  const cv = document.createElement('canvas'); cv.width = 120; cv.height = 160;
+  const c = cv.getContext('2d'); c.drawImage(staticLayer, 0, 0);
+  const keepCtx = bx; // planets/sun preview for koinot
+  if(id === 'koinot'){
+    const g = c.createRadialGradient(60,150,0,60,150,30); g.addColorStop(0,'#ffd2b0'); g.addColorStop(.25,'#ff7a3d'); g.addColorStop(1,'rgba(255,90,40,0)'); c.fillStyle = g; c.fillRect(0,110,120,50);
+  }
+  thumbs[id] = cv.toDataURL('image/jpeg', .7);
+  S_.bg = keep; W = w0; H = h0; DPR = d0; staticLayer = sl; bgStars = bs; planets = pl;
+  return thumbs[id];
+}
+$('#imgIn').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if(!f) return;
+  try{
+    const img = await createImageBitmap(f);
+    const max = 1600, s = Math.min(1, max/Math.max(img.width, img.height));
+    const cv = document.createElement('canvas'); cv.width = Math.round(img.width*s); cv.height = Math.round(img.height*s);
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+    const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', .86));
+    await idbSet('custom', blob); await loadCustom(); setBg('custom'); renderSettings();
+  }catch(err){ confirmDlg('Xato', 'Bu rasmni ochib bo‘lmadi.', 'OK', () => {}, false); }
+});
+
+/* ----- backup ----- */
+function exportData(){
+  const data = JSON.stringify({app:'tasbeh', v:1, date:new Date().toISOString(), zikrs: st.zikrs}, null, 1);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
+  a.download = 'tasbeh-zaxira-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+}
+$('#jsonIn').addEventListener('change', e => {
+  const f = e.target.files[0]; e.target.value = ''; if(!f) return;
+  f.text().then(t => {
+    const d = JSON.parse(t), list = Array.isArray(d) ? d : (d.zikrs || d.counters);
+    if(!Array.isArray(list)) throw 0;
+    const clean = list.filter(z => z && z.name).map(z => ({id: z.id || uid(), name: String(z.name), ar: z.ar ? String(z.ar) : '', tr: z.tr ? String(z.tr) : '',
+      count: Math.max(0, parseInt(z.count, 10) || 0), target: Math.max(0, parseInt(z.target, 10) || 0)}));
+    confirmDlg('Tiklansinmi?', `Fayldan ${clean.length} ta zikr topildi. Hozirgi ro‘yxat almashtiriladi.`, 'Tiklash', () => {
+      st.zikrs = clean; st.sel = clean[0] ? clean[0].id : null; history = []; save(true); renderZikr(); closeSheets();
+    }, false);
+  }).catch(() => confirmDlg('Xato', 'Bu fayl zaxira nusxa emas.', 'OK', () => {}, false));
+});
+
+/* ----- wake lock ----- */
+let lock = null;
+async function wake(){
+  try{
+    if(S_.wake && 'wakeLock' in navigator && document.visibilityState === 'visible'){
+      if(!lock){ lock = await navigator.wakeLock.request('screen'); lock.addEventListener('release', () => lock = null); }
+    } else if(lock){ await lock.release(); lock = null; }
+  }catch(e){ lock = null; }
+}
+document.addEventListener('visibilitychange', () => { wake(); if(document.hidden) musicOff(); else if(S_.music && ac) musicOn(); });
+document.addEventListener('pointerdown', () => { wake(); if(S_.music && !musicNodes) musicOn(); }, {once:true});
+
+/* ----- start ----- */
+window.addEventListener('resize', resize);
+applyAccent(); applyBgFx();
+loadCustom().then(() => { if(S_.bg === 'custom' && !customUrl) S_.bg = 'koinot'; resize(); setBg(S_.bg); renderZikr(); });
+resize(); renderZikr();
+requestAnimationFrame(loop);
+if(document.fonts) document.fonts.ready.then(() => { dirty = true; });
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+})();
+</script>
+</body>
+</html>
