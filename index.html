@@ -29,18 +29,24 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 svg.i{width:24px;height:24px;display:block;}
 
 #bg{position:fixed;inset:0;width:100%;height:100%;display:block;transform-origin:center;}
+#bgv{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:none;transform-origin:center;}
+.timers{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 6px);z-index:6;display:flex;justify-content:center;gap:16px;
+  font-size:12px;color:rgba(255,255,255,.85);pointer-events:none;font-variant-numeric:tabular-nums;text-shadow:0 1px 6px rgba(0,0,0,.7);}
+.timers span{display:flex;gap:5px;align-items:baseline;}
+.timers i{font-style:normal;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px;font-size:9.5px;}
+.timers b{font-weight:600;}
 #shade{position:fixed;inset:0;background:#000;opacity:.15;pointer-events:none;}
 #beads{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:2;}
 #tap{position:fixed;inset:0;z-index:1;touch-action:manipulation;}
 
-.top{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:4px;
-  padding:calc(env(safe-area-inset-top) + 8px) 10px 0;}
+.top{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:6px;
+  padding:calc(env(safe-area-inset-top) + 28px) 10px 0;}
 .top .sp{flex:1;}
 .ib{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   background:rgba(255,255,255,.06);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
 .ib:active{background:rgba(255,255,255,.16);}
 
-.zikr{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 9%);z-index:3;text-align:center;pointer-events:none;padding:0 22px;}
+.zikr{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 84px);z-index:3;text-align:center;pointer-events:none;padding:0 22px;}
 .ar{font-family:Amiri,serif;font-weight:700;line-height:1.55;direction:rtl;text-shadow:0 2px 18px rgba(0,0,0,.5);}
 .sep{position:relative;width:min(46vw,190px);height:1px;margin:6px auto 12px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);}
 .sep i{position:absolute;left:50%;top:50%;width:8px;height:8px;background:var(--accent);transform:translate(-50%,-50%) rotate(45deg);}
@@ -98,6 +104,29 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px;margin:0;}
 .bgt{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;border:2px solid transparent;background:#222 center/cover no-repeat;font-size:12px;font-weight:600;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;text-shadow:0 1px 4px #000;}
 .bgt.on{border-color:var(--accent);}
 .bgt.add{border:2px dashed rgba(255,255,255,.25);background:#161d21;align-items:center;flex-direction:column;gap:6px;padding:0;color:var(--muted);}
+.bgt{isolation:isolate;}
+.bgt video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;}
+.chip{position:relative;}
+.chip .xb{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;background:#3a444b;font-size:14px;line-height:24px;text-align:center;}
+.chip.add{border:1.5px dashed rgba(255,255,255,.25);background:transparent;color:var(--muted);}
+.chip .nm{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.arow{display:flex;align-items:center;gap:10px;width:100%;padding:12px 12px;border-radius:12px;background:var(--chip);margin-top:8px;font-size:14px;border:1.5px solid transparent;text-align:left;}
+.arow.on{border-color:var(--accent);background:#2a2421;}
+.arow .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.arow.add{justify-content:center;border:1.5px dashed rgba(255,255,255,.25);background:transparent;color:var(--muted);}
+.arow .xb{width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.35);font-size:16px;line-height:28px;text-align:center;flex-shrink:0;}
+.day{background:var(--chip);border-radius:14px;padding:12px 14px;margin-top:10px;}
+.day .dh{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:15px;}
+.day .dh span{font-weight:400;font-size:12px;color:var(--muted);}
+.day .dl{padding:7px 0 2px;border-top:1px solid var(--line);margin-top:7px;font-size:13px;}
+.day .dl div{display:flex;justify-content:space-between;gap:10px;}
+.day .dl span{color:var(--muted);white-space:nowrap;}
+.day .bar{height:4px;border-radius:2px;background:var(--accent);margin-top:5px;opacity:.85;}
+.sum{display:flex;gap:8px;margin-top:12px;}
+.sum div{flex:1;background:var(--chip);border-radius:12px;padding:10px;text-align:center;}
+.sum b{display:block;font-size:20px;}
+.sum span{font-size:11px;color:var(--muted);}
+#done .dt{font-size:14px;color:var(--muted);letter-spacing:.5px;}
 .bgt .x{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6);font-size:14px;line-height:24px;}
 .note{font-size:12px;color:var(--muted);line-height:1.5;padding:4px 0 8px;}
 .btnrow{display:flex;gap:10px;padding:14px 0 4px;}
@@ -131,13 +160,18 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px;margin:0;}
 </head>
 <body>
 <canvas id="bg"></canvas>
+<video id="bgv" muted loop playsinline preload="auto"></video>
 <div id="shade"></div>
+<audio id="bga" loop preload="auto"></audio>
 <div id="tap"></div>
 <canvas id="beads"></canvas>
+
+<div class="timers" id="timers"><span><i>Bugun</i><b id="tDay">0:00:00</b></span><span><i>Zikr</i><b id="tZikr">0:00:00</b></span><span><i>Davra</i><b id="tRound">0:00:00</b></span></div>
 
 <header class="top">
   <button class="ib" id="listBtn" aria-label="Zikrlar"></button>
   <div class="sp"></div>
+  <button class="ib" id="resetBtn" aria-label="Nolga tushirish"></button>
   <button class="ib" id="undoBtn" aria-label="Bekor qilish"></button>
   <button class="ib" id="setBtn" aria-label="Sozlamalar"></button>
 </header>
@@ -160,6 +194,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px;margin:0;}
 
 <div id="done">
   <div class="dn" id="dnum"></div>
+  <div class="dt" id="dtime"></div>
   <div class="dar">تَقَبَّلَ ٱللَّٰهُ مِنَّا وَمِنكُمْ</div>
   <div class="duz">Alloh bizdan ham, sizdan ham qabul qilsin</div>
   <div class="dh">Davom etish uchun bosing</div>
@@ -174,8 +209,12 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px;margin:0;}
   <div class="sh-head"><h2>Sozlamalar</h2><button class="ib" data-close aria-label="Yopish"></button></div>
   <div class="sh-body" id="setBody"></div>
 </div>
+<div class="sheet" id="statSheet">
+  <div class="sh-head"><h2>Statistika</h2><button class="ib" data-close aria-label="Yopish"></button></div>
+  <div class="sh-body" id="statBody"></div>
+</div>
 <div class="dlgb" id="dlgb"><div class="dlg" id="dlg"></div></div>
-<input type="file" id="imgIn" accept="image/*" style="display:none">
+<input type="file" id="upIn" style="display:none">
 <input type="file" id="jsonIn" accept="application/json,.json" style="display:none">
 
 <script>
@@ -194,9 +233,10 @@ const IC = {
   set: S('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
   close: S('<path d="M6 6l12 12M18 6L6 18"/>'),
   dots: S('<circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/>'),
+  reset: S('<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/>'),
   img: S('<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>')
 };
-$('#listBtn').innerHTML = IC.list; $('#undoBtn').innerHTML = IC.undo; $('#setBtn').innerHTML = IC.set;
+$('#listBtn').innerHTML = IC.list; $('#resetBtn').innerHTML = IC.reset; $('#undoBtn').innerHTML = IC.undo; $('#setBtn').innerHTML = IC.set;
 document.querySelectorAll('[data-close]').forEach(b => b.innerHTML = IC.close);
 
 /* ================= DATA ================= */
@@ -210,7 +250,8 @@ const PRESETS = [
   ['La havla va la quvvata illa billah','لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّٰهِ','Kuch-quvvat faqat Alloh bilandir',100],
   ['Subhanallohi va bihamdihi','سُبْحَانَ ٱللَّٰهِ وَبِحَمْدِهِ','Allohni hamd bilan poklab yod etaman',100]
 ];
-const DEF_SET = { tapSound:true, sfx:0, volume:.7, sig:true, sigType:0, doneSound:true, music:false, vibrate:true,
+const DEF_SET = { tapSound:true, sfx:0, volume:.7, sig:true, sigType:0, doneSound:true, vibrate:true, vibSig:true,
+  bgAudio:'off', musicVol:.5, vidSound:false, vidVol:.6,
   beadColor:'#8fc3cc', accentColor:'#ff6a3d', beadSize:1, bg:'koinot', blur:0, dark:.15, motion:true, wake:true };
 const KEY = 'tasbeh-v1';
 let st;
@@ -221,6 +262,11 @@ if(!st || !Array.isArray(st.zikrs)){
 st.set = Object.assign({}, DEF_SET, st.set || {});
 if(!st.zikrs.some(z => z.id === st.sel)) st.sel = st.zikrs[0] ? st.zikrs[0].id : null;
 const S_ = st.set;
+if(S_.music === true && S_.bgAudio === 'off') S_.bgAudio = 'ambient';
+delete S_.music;
+if(S_.bg === 'custom') S_.bg = 'm:custom';
+if(!Array.isArray(st.media)) st.media = [];
+if(!st.stats || typeof st.stats !== 'object') st.stats = {};
 let saveT = 0;
 function save(now){
   clearTimeout(saveT);
@@ -233,7 +279,7 @@ const cur = () => st.zikrs.find(z => z.id === st.sel);
 let history = [];
 
 /* ================= AUDIO ================= */
-let ac = null, master = null, noiseBuf = null, musicNodes = null;
+let ac = null, master = null, noiseBuf = null, musicNodes = null, started = false;
 function audio(){
   if(!ac){
     const C = window.AudioContext || window.webkitAudioContext; if(!C) return null;
@@ -289,7 +335,7 @@ function setVolume(){ if(master) master.gain.setTargetAtTime(S_.volume, ac.curre
 
 function musicOn(){
   if(!audio() || musicNodes) return;
-  const out = ac.createGain(); out.gain.value = 0.0001; out.connect(master);
+  const out = ac.createGain(); out.gain.value = 0.0001; out.connect(ac.destination);
   const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700; lp.connect(out);
   const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = .07; lg.gain.value = 300; lfo.connect(lg); lg.connect(lp.frequency); lfo.start();
   const oscs = [[110,0],[164.81,3],[220,-4],[329.63,5]].map(([f,d],i) => {
@@ -299,7 +345,7 @@ function musicOn(){
   const n = ac.createBufferSource(); n.buffer = noiseBuf; n.loop = true;
   const nf = ac.createBiquadFilter(); nf.type = 'lowpass'; nf.frequency.value = 350; const ng = ac.createGain(); ng.gain.value = .25;
   n.connect(nf); nf.connect(ng); ng.connect(out); n.start();
-  out.gain.exponentialRampToValueAtTime(.09, ac.currentTime + 3);
+  out.gain.exponentialRampToValueAtTime(Math.max(.0001, .2*S_.musicVol), ac.currentTime + 3);
   musicNodes = { out, stop: [lfo, n, ...oscs] };
 }
 function musicOff(){
@@ -307,13 +353,39 @@ function musicOff(){
   m.out.gain.setTargetAtTime(0.0001, ac.currentTime, .5);
   setTimeout(() => m.stop.forEach(o => { try{ o.stop(); }catch(e){} }), 2500);
 }
-function vib(p){ if(S_.vibrate && navigator.vibrate) try{ navigator.vibrate(p); }catch(e){} }
+function setMusicVol(){ if(musicNodes) musicNodes.out.gain.setTargetAtTime(Math.max(.0001, .2*S_.musicVol), ac.currentTime, .1); bga.volume = clamp(S_.musicVol, 0, 1); }
+// sig = true: 33/66/99 va maqsad tebranishi (alohida tugma bilan boshqariladi)
+function vib(p, sig){ if((sig ? S_.vibSig : S_.vibrate) && navigator.vibrate) try{ navigator.vibrate(p); }catch(e){} }
+
+/* --- o'z audio fayllari (har bosishdagi tovush) --- */
+const bufCache = {};
+let tapSrc = null;
+async function loadBuf(id){
+  if(bufCache[id]) return bufCache[id];
+  const b = await idbGet(id); if(!b || !audio()) return null;
+  try{ const ab = await b.arrayBuffer(); bufCache[id] = await ac.decodeAudioData(ab); }catch(e){ return null; }
+  return bufCache[id];
+}
+function playBuf(buf){
+  if(!buf || !audio()) return;
+  if(tapSrc){ try{ tapSrc.stop(); }catch(e){} }
+  const s = ac.createBufferSource(); s.buffer = buf; s.connect(master); s.start(); tapSrc = s;
+}
+function tapSound(force){
+  if(!S_.tapSound && !force) return;
+  if(typeof S_.sfx === 'string' && S_.sfx.startsWith('m:')){
+    const id = S_.sfx.slice(2);
+    if(bufCache[id]) playBuf(bufCache[id]); else loadBuf(id).then(playBuf);
+  } else play((SFX[S_.sfx] || SFX[0])[1]);
+}
+function preloadTap(){ if(typeof S_.sfx === 'string' && S_.sfx.startsWith('m:')) loadBuf(S_.sfx.slice(2)); }
 
 /* ================= BACKGROUND ================= */
 const bgc = $('#bg'), bx = bgc.getContext('2d');
 let W = 0, H = 0, DPR = 1, staticLayer = null, bgImg = null, bgStars = [], planets = [], shoot = null, lastBg = 0;
-// O'zingiz bergan fon rasmlari shu ro'yxatga qo'shiladi: bg/ papkasidagi fayl nomlari
+// Tayyor fonlar: bg/ papkasidagi rasm (.jpg/.png) yoki video (.mp4/.webm) fayl nomlari
 const BG_FILES = [];
+const isVid = n => /\.(mp4|webm|mov)$/i.test(n);
 const BUILTIN = [['koinot','Koinot'],['tun','Tun'],['qora','Qora']];
 
 function rnd(a,b){ return a + Math.random()*(b-a); }
@@ -371,6 +443,7 @@ function buildStatic(){
   } else { c.fillStyle = '#0c1519'; c.fillRect(0,0,W,H); }
 }
 function drawBg(now, force){
+  if(bgv.style.display === 'block') return;
   const animated = S_.motion && (S_.bg === 'koinot' || S_.bg === 'tun');
   if(!force && (!animated || now - lastBg < 33)) return;
   lastBg = now;
@@ -429,26 +502,87 @@ function drawSolar(t){
   bx.restore();
 }
 function applyBgFx(){
-  bgc.style.filter = S_.blur ? `blur(${S_.blur}px)` : '';
-  bgc.style.transform = S_.blur ? `scale(${1 + S_.blur/120})` : '';
+  [bgc, bgv].forEach(el => {
+    el.style.filter = S_.blur ? `blur(${S_.blur}px)` : '';
+    el.style.transform = S_.blur ? `scale(${1 + S_.blur/120})` : '';
+  });
   $('#shade').style.opacity = S_.dark;
 }
 /* Rasmlar: bg/ fayllari yoki telefondan yuklangan (IndexedDB) */
 function idb(){ return new Promise((res, rej) => { const r = indexedDB.open('tasbeh', 1); r.onupgradeneeded = () => r.result.createObjectStore('img'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
 async function idbGet(k){ const d = await idb(); return new Promise(res => { const q = d.transaction('img').objectStore('img').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(null); }); }
+async function idbDel(k){ return idbSet(k, null); }
 async function idbSet(k, v){ const d = await idb(); return new Promise(res => { const tx = d.transaction('img','readwrite'); v == null ? tx.objectStore('img').delete(k) : tx.objectStore('img').put(v, k); tx.oncomplete = res; tx.onerror = res; }); }
-let customUrl = null;
-async function loadCustom(){
-  try{ const b = await idbGet('custom'); if(customUrl) URL.revokeObjectURL(customUrl); customUrl = b ? URL.createObjectURL(b) : null; }catch(e){ customUrl = null; }
+const mediaUrl = {};
+const bgv = $('#bgv'), bga = $('#bga');
+const mediaOf = id => st.media.find(m => m.id === id);
+async function initMedia(){
+  if(!st.media.some(m => m.id === 'custom')){
+    try{ const b = await idbGet('custom'); if(b) st.media.unshift({id:'custom', kind:'bg', name:'Mening rasmim', mime: b.type || 'image/jpeg'}); }catch(e){}
+  }
+  const keep = [];
+  for(const m of st.media){
+    try{ const b = await idbGet(m.id); if(b){ mediaUrl[m.id] = URL.createObjectURL(b); keep.push(m); } }catch(e){}
+  }
+  st.media = keep;
+  if(S_.bg.startsWith('m:') && !mediaOf(S_.bg.slice(2))) S_.bg = 'koinot';
+  if(typeof S_.sfx === 'string' && !mediaOf(S_.sfx.slice(2))) S_.sfx = 0;
+  if(S_.bgAudio.startsWith('m:') && !mediaOf(S_.bgAudio.slice(2))) S_.bgAudio = 'off';
+  save();
 }
+let vidUrl = null, vidToken = 0;
+function playVid(){
+  if(bgv.style.display !== 'block') return;
+  bgv.muted = !S_.vidSound || !started;
+  bgv.volume = clamp(S_.vidVol, 0, 1);
+  if(S_.motion && !document.hidden){ const pr = bgv.play(); if(pr) pr.catch(() => { bgv.muted = true; bgv.play().catch(() => {}); }); }
+  else bgv.pause();
+}
+async function showVideo(src, fromFile){
+  const tok = ++vidToken;
+  let url = src;
+  if(fromFile){ // tayyor videoni to'liq yuklab oladi — internetsiz ham ishlaydi
+    try{ const r = await fetch(src); url = URL.createObjectURL(await r.blob()); }catch(e){ url = src; }
+    if(tok !== vidToken){ if(url !== src) URL.revokeObjectURL(url); return; }
+    if(vidUrl) URL.revokeObjectURL(vidUrl); vidUrl = url;
+  }
+  bgv.src = url; bgv.style.display = 'block'; bgc.style.visibility = 'hidden'; playVid();
+}
+function hideVideo(){
+  vidToken++;
+  if(bgv.style.display === 'block'){ bgv.pause(); bgv.removeAttribute('src'); bgv.load(); }
+  bgv.style.display = 'none'; bgc.style.visibility = '';
+}
+bgv.addEventListener('error', () => { if(bgv.style.display === 'block' && bgv.getAttribute('src')){ hideVideo(); S_.bg = 'koinot'; save(); buildStatic(); drawBg(performance.now(), true); } });
 function setBg(id){
   S_.bg = id; save();
   bgImg = null;
-  const src = id === 'custom' ? customUrl : (id.startsWith('file:') ? 'bg/' + id.slice(5) : null);
+  let src = null, video = false, fromFile = false;
+  if(id.startsWith('m:')){
+    const m = mediaOf(id.slice(2));
+    if(m && mediaUrl[m.id]){ src = mediaUrl[m.id]; video = (m.mime || '').startsWith('video/'); }
+    else { id = S_.bg = 'koinot'; }
+  } else if(id.startsWith('file:')){
+    const f = id.slice(5); src = 'bg/' + f; video = isVid(f); fromFile = true;
+  }
+  if(video){ showVideo(src, fromFile); return; }
+  hideVideo();
   if(src){
     bgImg = new Image(); bgImg.onload = () => { buildStatic(); drawBg(performance.now(), true); }; bgImg.src = src;
   }
   buildStatic(); drawBg(performance.now(), true);
+}
+/* fon audiosi: o'chiq / sokin ohang / yuklangan audio */
+function applyMusic(){
+  const m = S_.bgAudio || 'off';
+  if(document.hidden || m === 'off'){ bga.pause(); musicOff(); return; }
+  if(m === 'ambient'){ bga.pause(); if(started) musicOn(); return; }
+  musicOff();
+  const id = m.slice(2), url = mediaUrl[id];
+  if(!url){ bga.pause(); return; }
+  if(bga.dataset.id !== id){ bga.src = url; bga.dataset.id = id; }
+  bga.volume = clamp(S_.musicVol, 0, 1);
+  if(started){ const pr = bga.play(); if(pr) pr.catch(() => {}); }
 }
 
 /* ================= BEADS ================= */
@@ -570,6 +704,52 @@ function layoutText(){
   if(len > 14) fs *= .78; if(len > 22) fs *= .8; if(len > 30) fs *= .85;
   arEl.style.fontSize = Math.round(fs) + 'px';
 }
+/* ---------- vaqt va statistika ---------- */
+const dkey = (d = new Date()) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+function dayRec(k = dkey()){ return st.stats[k] || (st.stats[k] = {open:0, c:{}, t:{}}); }
+function pruneStats(){ const ks = Object.keys(st.stats).sort(); while(ks.length > 120) delete st.stats[ks.shift()]; }
+const fmt = sec => { sec = Math.max(0, Math.floor(sec || 0)); const h = Math.floor(sec/3600), m = Math.floor(sec % 3600/60), x = sec % 60; return h + ':' + String(m).padStart(2,'0') + ':' + String(x).padStart(2,'0'); };
+let lastTick = performance.now();
+function tick(){
+  const now = performance.now(); let dt = (now - lastTick)/1000; lastTick = now;
+  if(document.hidden || dt <= 0) return;
+  dt = Math.min(dt, 5);
+  const d = dayRec(); d.open += dt;
+  const z = cur();
+  if(z){ d.t[z.id] = (d.t[z.id] || 0) + dt; if(z.roundOn) z.roundSec = (z.roundSec || 0) + dt; }
+  renderTimers(); save();
+}
+function renderTimers(){
+  const d = dayRec(), z = cur();
+  $('#tDay').textContent = fmt(d.open);
+  $('#tZikr').textContent = fmt(z ? d.t[z.id] : 0);
+  $('#tRound').textContent = fmt(z ? (z.roundOn ? z.roundSec : z.lastRound) : 0);
+}
+setInterval(tick, 1000);
+function resetZikr(z){
+  history.push({id: z.id, count: z.count, reset: true});
+  z.count = 0; z.roundOn = false; z.roundSec = 0; z.lastRound = 0;
+}
+function renderStats(){
+  const ks = Object.keys(st.stats).sort().reverse();
+  const name = id => { const z = st.zikrs.find(x => x.id === id); return z ? z.name : 'O‘chirilgan zikr'; };
+  const tk = dkey(), yk = dkey(new Date(Date.now() - 864e5));
+  const label = k => k === tk ? 'Bugun' : k === yk ? 'Kecha' : k.slice(8) + '.' + k.slice(5,7) + '.' + k.slice(0,4);
+  let wc = 0, wt = 0;
+  ks.slice(0, 7).forEach(k => { const d = st.stats[k]; wt += d.open || 0; Object.values(d.c || {}).forEach(v => wc += v); });
+  let html = `<div class="sum"><div><b>${wc}</b><span>7 kunda zikr</span></div><div><b>${fmt(wt)}</b><span>7 kunda vaqt</span></div></div>`;
+  const days = ks.filter(k => { const d = st.stats[k]; return d.open >= 1 || Object.values(d.c || {}).some(v => v > 0); }).slice(0, 30);
+  if(!days.length) html += '<p class="note" style="margin-top:16px">Hali statistika yo‘q. Zikr aytishni boshlang — bu yerda har kuni nechta aytilgani va qancha vaqt ketgani chiqadi.</p>';
+  days.forEach(k => {
+    const d = st.stats[k], ids = new Set([...Object.keys(d.c || {}), ...Object.keys(d.t || {})]);
+    const rows = [...ids].map(id => ({id, c: (d.c || {})[id] || 0, t: (d.t || {})[id] || 0})).filter(r => r.c > 0 || r.t >= 30).sort((a,b) => b.c - a.c || b.t - a.t);
+    const total = rows.reduce((a,r) => a + r.c, 0), max = Math.max(1, ...rows.map(r => r.c));
+    html += `<div class="day"><div class="dh">${label(k)}<span>${total} ta · ${fmt(d.open)}</span></div>` +
+      rows.map(r => `<div class="dl"><div><b>${esc(name(r.id))}</b><span>${r.c} ta · ${fmt(r.t)}</span></div><div class="bar" style="width:${Math.max(3, r.c/max*100)}%"></div></div>`).join('') + '</div>';
+  });
+  $('#statBody').innerHTML = html;
+}
+
 function renderZikr(){
   const z = cur();
   $('#ar').textContent = z ? (z.ar || '') : '';
@@ -578,6 +758,7 @@ function renderZikr(){
   $('#tr').textContent = z ? (z.tr || '') : '';
   layoutText(); renderCount();
   displayPos = z ? z.count : 0; anim = null; dirty = true;
+  renderTimers();
 }
 function renderCount(){
   const z = cur(), n = z ? z.count : 0, T = z ? z.target : 0;
@@ -595,27 +776,30 @@ let doneOpen = 0;
 function count(){
   const z = cur(); if(!z) return;
   if(doneOpen){ if(performance.now() - doneOpen > 600) closeDone(); return; }
-  history.push({id: z.id, count: z.count}); if(history.length > 300) history.shift();
+  history.push({id: z.id, count: z.count, day: dkey()}); if(history.length > 300) history.shift();
   z.count++;
+  if(!z.roundOn){ z.roundOn = true; z.roundSec = 0; }
+  const d = dayRec(); d.c[z.id] = (d.c[z.id] || 0) + 1;
   const from = anim ? displayPos : z.count - 1;
   anim = {from, to: z.count, t0: performance.now(), d: 260};
   plusOnes.push({t0: performance.now()}); pulse = 1; dirty = true;
   const hitTarget = z.target > 0 && z.count % z.target === 0;
   const hitSig = z.count % 33 === 0;
   if(hitTarget){
-    if(S_.doneSound) play(playDone); else if(S_.tapSound) play(SFX[S_.sfx][1]);
-    vib([60,80,60,80,200]);
-    if(z.count === z.target || z.count % z.target === 0) openDone(z.count);
+    if(S_.doneSound) play(playDone); else tapSound();
+    vib([200,100,200,100,400], true);
+    z.lastRound = z.roundSec; z.roundOn = false;
+    openDone(z.count, z.lastRound);
   } else if(hitSig){
-    if(S_.sig) play(SIGS[S_.sigType][1]); else if(S_.tapSound) play(SFX[S_.sfx][1]);
-    vib([90,60,90]);
+    if(S_.sig) play(SIGS[S_.sigType][1]); else tapSound();
+    vib([150,90,150], true);
   } else {
-    if(S_.tapSound) play(SFX[S_.sfx][1]);
-    vib(12);
+    tapSound();
+    vib(15);
   }
-  renderCount(); save();
+  renderCount(); renderTimers(); save();
 }
-function openDone(n){ $('#dnum').textContent = n; $('#done').classList.add('show'); doneOpen = performance.now(); }
+function openDone(n, sec){ $('#dnum').textContent = n; $('#dtime').textContent = 'Vaqt: ' + fmt(sec); $('#done').classList.add('show'); doneOpen = performance.now(); }
 function closeDone(){ $('#done').classList.remove('show'); doneOpen = 0; }
 $('#done').addEventListener('pointerdown', () => { if(performance.now() - doneOpen > 600) closeDone(); });
 
@@ -628,9 +812,17 @@ $('#undoBtn').addEventListener('click', () => {
   const h = history.pop(); if(!h) return;
   const z = st.zikrs.find(x => x.id === h.id); if(!z) return;
   if(st.sel !== z.id){ st.sel = z.id; renderZikr(); }
+  if(h.day && h.count < z.count){ const d = st.stats[h.day]; if(d && d.c[z.id]) d.c[z.id] = Math.max(0, d.c[z.id] - (z.count - h.count)); }
   const from = displayPos; z.count = h.count;
+  if(h.reset){ z.roundOn = false; }
   anim = {from, to: z.count, t0: performance.now(), d: 260}; dirty = true;
-  renderCount(); save(); vib(8);
+  renderCount(); renderTimers(); save(); vib(8);
+});
+$('#resetBtn').addEventListener('click', () => {
+  const z = cur(); if(!z) return;
+  confirmDlg('Nolga tushirilsinmi?', `<b>${esc(z.name)}</b>: ${z.count} → 0<br><span style="color:var(--muted);font-size:13px">Adashib bossangiz, ↩ tugmasi bilan qaytarasiz.</span>`, 'Nolga', () => {
+    resetZikr(z); save(); renderZikr();
+  });
 });
 
 /* ----- sheets ----- */
@@ -662,13 +854,14 @@ function renderList(){
       <div class="bd">${z.count}</div>
       <div class="nm"><b>${esc(z.name)}</b>${z.ar ? `<span>${esc(z.ar)}</span>` : ''}</div>
       <button class="ed" data-ed="${z.id}" aria-label="Tahrirlash">${IC.dots}</button></div>`).join('')
-    + `<div class="btnrow"><button class="btn ok" id="addZ">＋ Yangi zikr</button></div>`;
+    + `<div class="btnrow"><button class="btn" id="statB">Statistika</button><button class="btn ok" id="addZ">＋ Yangi zikr</button></div>`;
   b.querySelectorAll('.zr').forEach(r => r.addEventListener('click', e => {
     if(e.target.closest('[data-ed]')) return;
     st.sel = r.dataset.id; save(); renderZikr(); closeSheets();
   }));
   b.querySelectorAll('[data-ed]').forEach(x => x.addEventListener('click', () => editZikr(x.dataset.ed)));
   $('#addZ').onclick = () => editZikr(null);
+  $('#statB').onclick = () => { renderStats(); openSheet('#statSheet'); };
 }
 function editZikr(id){
   const z = id ? st.zikrs.find(x => x.id === id) : {name:'', ar:'', tr:'', target:33, count:0};
@@ -694,7 +887,7 @@ function editZikr(id){
     };
     if(id){
       d.querySelector('#fR').onclick = () => confirmDlg('Nolga tushirilsinmi?', `<b>${esc(z.name)}</b>: ${z.count} → 0`, 'Nolga', () => {
-        history.push({id: z.id, count: z.count}); z.count = 0; save(); renderList(); renderZikr();
+        resetZikr(z); save(); renderList(); renderZikr();
       });
       d.querySelector('#fD').onclick = () => confirmDlg('O‘chirilsinmi?', `<b>${esc(z.name)}</b> (${z.count} ta) butunlay o‘chiriladi.`, 'O‘chirish', () => {
         const i = st.zikrs.indexOf(z); st.zikrs.splice(i, 1); history = history.filter(h => h.id !== z.id);
@@ -716,22 +909,39 @@ function swatches(key, list){
 }
 function renderSettings(){
   const b = $('#setBody');
+  const taps = st.media.filter(m => m.kind === 'tap'), mus = st.media.filter(m => m.kind === 'music'), bgs = st.media.filter(m => m.kind === 'bg');
+  const isV = m => (m.mime || '').startsWith('video/');
   const bgTiles = BUILTIN.map(([id, n]) => `<button class="bgt${S_.bg === id ? ' on' : ''}" data-bg="${id}" style="background-image:url(${thumb(id)})">${n}</button>`).join('')
-    + BG_FILES.map((f, i) => `<button class="bgt${S_.bg === 'file:' + f ? ' on' : ''}" data-bg="file:${esc(f)}" style="background-image:url('bg/${esc(f)}')">${i + 1}</button>`).join('')
-    + (customUrl ? `<button class="bgt${S_.bg === 'custom' ? ' on' : ''}" data-bg="custom" style="background-image:url(${customUrl})">Mening rasmim<span class="x" data-rm>×</span></button>` : '')
-    + `<button class="bgt add" id="addImg">${IC.img}<span>Rasm yuklash</span></button>`;
+    + BG_FILES.map((f, i) => isVid(f)
+        ? `<button class="bgt${S_.bg === 'file:' + f ? ' on' : ''}" data-bg="file:${esc(f)}"><video src="bg/${esc(f)}#t=0.5" muted playsinline preload="metadata"></video>${i + 1}</button>`
+        : `<button class="bgt${S_.bg === 'file:' + f ? ' on' : ''}" data-bg="file:${esc(f)}" style="background-image:url('bg/${esc(f)}')">${i + 1}</button>`).join('')
+    + bgs.map((m, i) => isV(m)
+        ? `<button class="bgt${S_.bg === 'm:' + m.id ? ' on' : ''}" data-bg="m:${m.id}"><video src="${mediaUrl[m.id]}#t=0.5" muted playsinline preload="metadata"></video>Video<span class="x" data-rm="${m.id}">×</span></button>`
+        : `<button class="bgt${S_.bg === 'm:' + m.id ? ' on' : ''}" data-bg="m:${m.id}" style="background-image:url(${mediaUrl[m.id]})">Rasm<span class="x" data-rm="${m.id}">×</span></button>`).join('')
+    + `<button class="bgt add" data-up="bg">${IC.img}<span>Rasm yoki<br>video qo‘shish</span></button>`;
+  const arow = (val, label, rm) => `<button class="arow${S_.bgAudio === val ? ' on' : ''}" data-ba="${val}"><span class="nm">${label}</span>${rm ? `<span class="xb" data-rm="${rm}">×</span>` : ''}</button>`;
   b.innerHTML = `
   <div class="sec"><h3>Tasbeh ovozi</h3>
     <div class="row"><span>Har bosishda ovoz</span>${sw('tapSound', S_.tapSound)}</div>
-    <div class="grid${S_.tapSound ? '' : ' dis'}" id="sfxGrid">${SFX.map((s, i) => `<button class="chip${S_.sfx === i ? ' on' : ''}" data-sfx="${i}"><span class="n">${i + 1}</span>${s[0]}</button>`).join('')}</div>
+    <div class="grid${S_.tapSound ? '' : ' dis'}" id="sfxGrid">${SFX.map((x, i) => `<button class="chip${S_.sfx === i ? ' on' : ''}" data-sfx="${i}"><span class="n">${i + 1}</span>${x[0]}</button>`).join('')}
+      ${taps.map(m => `<button class="chip${S_.sfx === 'm:' + m.id ? ' on' : ''}" data-sfx="m:${m.id}"><span class="n">Audio</span><span class="nm">${esc(m.name)}</span><span class="xb" data-rm="${m.id}">×</span></button>`).join('')}
+      <button class="chip add" data-up="tap"><span class="n">＋</span>Audio yuklash</button></div>
+    <div class="note">O‘z ovozingizni yuklashingiz mumkin, masalan «Subhanalloh» kalimasini yozib olib. Har bosishda shu ovoz eshitiladi.</div>
     <div class="slider"><label>Ovoz balandligi <span id="volV">${Math.round(S_.volume*100)}%</span></label><input type="range" min="0" max="100" value="${Math.round(S_.volume*100)}" id="vol"></div>
   </div>
-  <div class="sec"><h3>Har 33 da signal</h3>
-    <div class="row"><span>Signal<span class="sub">33, 66, 99… ga yetganda</span></span>${sw('sig', S_.sig)}</div>
-    <div class="grid${S_.sig ? '' : ' dis'}">${SIGS.map((s, i) => `<button class="chip${S_.sigType === i ? ' on' : ''}" data-sig="${i}">${s[0]}</button>`).join('')}</div>
+  <div class="sec"><h3>Signal va tebranish</h3>
+    <div class="row"><span>33 da signal ovozi<span class="sub">33, 66, 99… ga yetganda</span></span>${sw('sig', S_.sig)}</div>
+    <div class="grid${S_.sig ? '' : ' dis'}" id="sigGrid">${SIGS.map((x, i) => `<button class="chip${S_.sigType === i ? ' on' : ''}" data-sig="${i}">${x[0]}</button>`).join('')}</div>
     <div class="row"><span>Maqsadga yetganda ovoz</span>${sw('doneSound', S_.doneSound)}</div>
-    <div class="row"><span>Fon musiqasi<span class="sub">sokin, tinimsiz ohang</span></span>${sw('music', S_.music)}</div>
-    <div class="row"><span>Tebranish</span>${sw('vibrate', S_.vibrate)}</div>
+    <div class="row"><span>Har bosishda tebranish</span>${sw('vibrate', S_.vibrate)}</div>
+    <div class="row"><span>33 va maqsadda tebranish<span class="sub">har bosishdagi tebranish o‘chiq bo‘lsa ham ishlaydi</span></span>${sw('vibSig', S_.vibSig)}</div>
+    <div class="note">Telefon «Ovozsiz» (Silent) rejimida bo‘lsa, Chrome tebranishni o‘chirib qo‘yadi. «Tebranish» (Vibrate) rejimida ishlaydi.</div>
+  </div>
+  <div class="sec"><h3>Fon audiosi</h3>
+    ${arow('off', 'O‘chiq')}${arow('ambient', 'Sokin ohang')}
+    ${mus.map(m => arow('m:' + m.id, esc(m.name), m.id)).join('')}
+    <button class="arow add" data-up="music">＋ Audio yuklash (sura, nashid…)</button>
+    <div class="slider"><label>Fon ovozi balandligi <span id="mvV">${Math.round(S_.musicVol*100)}%</span></label><input type="range" min="0" max="100" value="${Math.round(S_.musicVol*100)}" id="mvol"></div>
   </div>
   <div class="sec"><h3>Donachalar</h3>
     <div class="row" style="border:0;padding-bottom:0"><span>Rangi</span></div>${swatches('beadColor', BEAD_COLS)}
@@ -740,54 +950,62 @@ function renderSettings(){
   </div>
   <div class="sec"><h3>Fon</h3>
     <div class="bgs">${bgTiles}</div>
-    <div class="note">Telefoningizdagi istalgan rasmni fon qilib qo‘yishingiz mumkin. U faqat shu telefonda saqlanadi.</div>
+    <div class="note">Istalgancha rasm yoki qisqa video qo‘shishingiz mumkin. Ular faqat shu telefonda saqlanadi.</div>
+    <div class="row"><span>Video ovozi<span class="sub">fon videosining o‘z ovozi</span></span>${sw('vidSound', S_.vidSound)}</div>
+    <div class="slider"><label>Video ovozi balandligi <span id="vvV">${Math.round(S_.vidVol*100)}%</span></label><input type="range" min="0" max="100" value="${Math.round(S_.vidVol*100)}" id="vvol"></div>
     <div class="slider"><label>Xiralashtirish <span id="blV">${S_.blur}px</span></label><input type="range" min="0" max="24" value="${S_.blur}" id="bl"></div>
     <div class="slider"><label>Qorong‘ilik <span id="dkV">${Math.round(S_.dark*100)}%</span></label><input type="range" min="0" max="85" value="${Math.round(S_.dark*100)}" id="dk"></div>
-    <div class="row"><span>Fon harakati<span class="sub">yulduzlar, sayyoralar (batareyani tejash uchun o‘chiring)</span></span>${sw('motion', S_.motion)}</div>
+    <div class="row"><span>Fon harakati<span class="sub">yulduzlar, sayyoralar, video (batareyani tejash uchun o‘chiring)</span></span>${sw('motion', S_.motion)}</div>
   </div>
   <div class="sec"><h3>Boshqa</h3>
     <div class="row"><span>Ekran o‘chmasin</span>${sw('wake', S_.wake)}</div>
+    <div class="btnrow"><button class="btn danger" id="resetAll">Hammasini nolga tushirish</button></div>
     <div class="btnrow"><button class="btn" id="bkOut">Zaxira olish</button><button class="btn" id="bkIn">Zaxiradan tiklash</button></div>
-    <div class="note">Zaxira faylni Telegram’ga saqlab qo‘ying. Telefon tozalansa, sanoqlar shu fayl orqali qaytadi.</div>
+    <div class="note">Zaxira faylni Telegram’ga saqlab qo‘ying. Telefon tozalansa, sanoqlar va statistika shu fayl orqali qaytadi (yuklangan rasm, video va audiolar zaxiraga kirmaydi).</div>
   </div>`;
 
-  b.querySelectorAll('[data-sw]').forEach(el => el.onclick = () => {
-    const k = el.dataset.sw; S_[k] = !S_[k]; el.classList.toggle('on', S_[k]); save();
-    if(k === 'tapSound') $('#sfxGrid').classList.toggle('dis', !S_.tapSound);
-    if(k === 'sig') el.closest('.sec').querySelector('.grid').classList.toggle('dis', !S_.sig);
-    if(k === 'music') S_.music ? musicOn() : musicOff();
-    if(k === 'vibrate') vib(40);
-    if(k === 'motion') drawBg(performance.now(), true);
-    if(k === 'wake') wake();
-    if(k === 'sig' && S_.sig) play(SIGS[S_.sigType][1]);
-    if(k === 'doneSound' && S_.doneSound) play(playDone);
-  });
-  b.querySelectorAll('[data-sfx]').forEach(el => el.onclick = () => {
-    S_.sfx = +el.dataset.sfx; save(); play(SFX[S_.sfx][1]);
-    b.querySelectorAll('[data-sfx]').forEach(x => x.classList.toggle('on', x === el));
-  });
-  b.querySelectorAll('[data-sig]').forEach(el => el.onclick = () => {
-    S_.sigType = +el.dataset.sig; save(); play(SIGS[S_.sigType][1]);
-    b.querySelectorAll('[data-sig]').forEach(x => x.classList.toggle('on', x === el));
-  });
+  b.onclick = e => {
+    const rm = e.target.closest('[data-rm]');
+    if(rm){ e.stopPropagation(); deleteMedia(rm.dataset.rm); return; }
+    const up = e.target.closest('[data-up]'); if(up){ upload(up.dataset.up); return; }
+    const t = e.target.closest('[data-sw]');
+    if(t){
+      const k = t.dataset.sw; S_[k] = !S_[k]; t.classList.toggle('on', S_[k]); save();
+      if(k === 'tapSound') $('#sfxGrid').classList.toggle('dis', !S_.tapSound);
+      if(k === 'sig'){ $('#sigGrid').classList.toggle('dis', !S_.sig); if(S_.sig) play(SIGS[S_.sigType][1]); }
+      if(k === 'doneSound' && S_.doneSound) play(playDone);
+      if(k === 'vibrate' && S_.vibrate) vib(40);
+      if(k === 'vibSig' && S_.vibSig) vib([150,90,150], true);
+      if(k === 'vidSound' || k === 'motion'){ started = true; playVid(); }
+      if(k === 'motion') drawBg(performance.now(), true);
+      if(k === 'wake') wake();
+      return;
+    }
+    const sf = e.target.closest('[data-sfx]');
+    if(sf){ const v = sf.dataset.sfx; S_.sfx = v.startsWith('m:') ? v : +v; save(); tapSound(true);
+      b.querySelectorAll('[data-sfx]').forEach(x => x.classList.toggle('on', x === sf)); return; }
+    const sg = e.target.closest('[data-sig]');
+    if(sg){ S_.sigType = +sg.dataset.sig; save(); play(SIGS[S_.sigType][1]);
+      b.querySelectorAll('[data-sig]').forEach(x => x.classList.toggle('on', x === sg)); return; }
+    const ba = e.target.closest('[data-ba]');
+    if(ba){ S_.bgAudio = ba.dataset.ba; save(); started = true; audio(); applyMusic();
+      b.querySelectorAll('[data-ba]').forEach(x => x.classList.toggle('on', x === ba)); return; }
+    const bg = e.target.closest('[data-bg]');
+    if(bg){ started = true; setBg(bg.dataset.bg); b.querySelectorAll('[data-bg]').forEach(x => x.classList.toggle('on', x === bg)); return; }
+    const cl = e.target.closest('[data-col]'); if(cl){ setColor(cl.dataset.col, cl.dataset.v); return; }
+  };
   const slide = (id, lab, fn) => { const r = b.querySelector(id); r.oninput = () => { b.querySelector(lab).textContent = fn(+r.value); save(); }; };
   slide('#vol', '#volV', v => { S_.volume = v/100; setVolume(); return v + '%'; });
-  b.querySelector('#vol').onchange = () => play(SFX[S_.sfx][1]);
+  b.querySelector('#vol').onchange = () => tapSound(true);
+  slide('#mvol', '#mvV', v => { S_.musicVol = v/100; setMusicVol(); return v + '%'; });
+  slide('#vvol', '#vvV', v => { S_.vidVol = v/100; bgv.volume = S_.vidVol; return v + '%'; });
   slide('#sz', '#szV', v => { S_.beadSize = v/100; dirty = true; return v + '%'; });
   slide('#bl', '#blV', v => { S_.blur = v; applyBgFx(); return v + 'px'; });
   slide('#dk', '#dkV', v => { S_.dark = v/100; applyBgFx(); return v + '%'; });
-  b.querySelectorAll('[data-col]').forEach(el => el.onclick = () => setColor(el.dataset.col, el.dataset.v));
   b.querySelectorAll('[data-colin]').forEach(el => el.oninput = () => setColor(el.dataset.colin, el.value, true));
-  b.querySelectorAll('[data-bg]').forEach(el => el.onclick = e => {
-    if(e.target.closest('[data-rm]')){
-      confirmDlg('Rasm o‘chirilsinmi?', 'Yuklangan fon rasmi o‘chiriladi.', 'O‘chirish', async () => {
-        await idbSet('custom', null); await loadCustom(); if(S_.bg === 'custom') setBg('koinot'); renderSettings();
-      });
-      return;
-    }
-    setBg(el.dataset.bg); b.querySelectorAll('[data-bg]').forEach(x => x.classList.toggle('on', x === el));
+  $('#resetAll').onclick = () => confirmDlg('Hammasi nolga tushirilsinmi?', 'Barcha zikrlarning soni 0 bo‘ladi. Statistika saqlanib qoladi.', 'Hammasini nolga', () => {
+    st.zikrs.forEach(z => { if(z.count) resetZikr(z); }); save(true); renderZikr(); closeSheets();
   });
-  $('#addImg').onclick = () => $('#imgIn').click();
   $('#bkOut').onclick = exportData;
   $('#bkIn').onclick = () => $('#jsonIn').click();
 }
@@ -814,21 +1032,67 @@ function thumb(id){
   S_.bg = keep; W = w0; H = h0; DPR = d0; staticLayer = sl; bgStars = bs; planets = pl;
   return thumbs[id];
 }
-$('#imgIn').addEventListener('change', async e => {
-  const f = e.target.files[0]; e.target.value = ''; if(!f) return;
-  try{
-    const img = await createImageBitmap(f);
-    const max = 1600, s = Math.min(1, max/Math.max(img.width, img.height));
-    const cv = document.createElement('canvas'); cv.width = Math.round(img.width*s); cv.height = Math.round(img.height*s);
-    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-    const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', .86));
-    await idbSet('custom', blob); await loadCustom(); setBg('custom'); renderSettings();
-  }catch(err){ confirmDlg('Xato', 'Bu rasmni ochib bo‘lmadi.', 'OK', () => {}, false); }
+const upIn = $('#upIn');
+let upMode = null;
+const UP = {
+  bg:    {accept:'image/*,video/*', multiple:true,  max:80, label:'rasm yoki video'},
+  tap:   {accept:'audio/*',         multiple:false, max:20, label:'audio'},
+  music: {accept:'audio/*',         multiple:true,  max:150, label:'audio'}
+};
+function upload(mode){
+  upMode = mode; upIn.accept = UP[mode].accept; upIn.multiple = UP[mode].multiple; upIn.value = ''; upIn.click();
+}
+async function shrinkImage(f){
+  const img = await createImageBitmap(f);
+  const max = 1600, sc = Math.min(1, max/Math.max(img.width, img.height));
+  const cv = document.createElement('canvas'); cv.width = Math.round(img.width*sc); cv.height = Math.round(img.height*sc);
+  cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+  return await new Promise(r => cv.toBlob(r, 'image/jpeg', .86));
+}
+upIn.addEventListener('change', async () => {
+  const files = [...upIn.files]; upIn.value = ''; const mode = upMode; if(!files.length || !mode) return;
+  let last = null, bad = [];
+  for(const f of files){
+    try{
+      const type = f.type || '';
+      if(mode === 'bg' && !type.startsWith('image/') && !type.startsWith('video/')){ bad.push(f.name); continue; }
+      if(mode !== 'bg' && !type.startsWith('audio/') && !/\.(mp3|m4a|aac|ogg|opus|wav|flac)$/i.test(f.name)){ bad.push(f.name); continue; }
+      if(f.size > UP[mode].max*1024*1024){ bad.push(f.name + ' (juda katta)'); continue; }
+      const blob = type.startsWith('image/') ? await shrinkImage(f) : f;
+      const id = 'm' + uid();
+      await idbSet(id, blob);
+      const meta = {id, kind: mode, name: f.name.replace(/\.[^.]+$/, '').slice(0, 40), mime: blob.type || type || 'audio/mpeg'};
+      st.media.push(meta); mediaUrl[id] = URL.createObjectURL(blob); last = meta;
+    }catch(err){ bad.push(f.name); }
+  }
+  save(true);
+  if(last){
+    started = true;
+    if(mode === 'bg') setBg('m:' + last.id);
+    if(mode === 'tap'){ S_.sfx = 'm:' + last.id; S_.tapSound = true; save(); loadBuf(last.id).then(buf => { if(buf) playBuf(buf); else bad.push(last.name + ' (o‘qib bo‘lmadi)'); }); }
+    if(mode === 'music'){ S_.bgAudio = 'm:' + last.id; save(); audio(); applyMusic(); }
+  }
+  renderSettings();
+  if(bad.length) confirmDlg('Ba’zi fayllar qo‘shilmadi', esc(bad.join(', ')) + `<br><span style="color:var(--muted);font-size:13px">Kerakli tur: ${UP[mode].label}, hajmi ${UP[mode].max} MB gacha.</span>`, 'OK', () => {}, false);
 });
+function deleteMedia(id){
+  const m = mediaOf(id); if(!m) return;
+  const what = m.kind === 'bg' ? ((m.mime || '').startsWith('video/') ? 'Video' : 'Rasm') : 'Audio';
+  confirmDlg(what + ' o‘chirilsinmi?', m.kind === 'bg' ? 'Bu fon ro‘yxatdan o‘chiriladi.' : `<b>${esc(m.name)}</b> o‘chiriladi.`, 'O‘chirish', async () => {
+    await idbDel(id);
+    st.media = st.media.filter(x => x.id !== id);
+    if(mediaUrl[id]){ URL.revokeObjectURL(mediaUrl[id]); delete mediaUrl[id]; }
+    delete bufCache[id];
+    if(S_.bg === 'm:' + id) setBg('koinot');
+    if(S_.sfx === 'm:' + id) S_.sfx = 0;
+    if(S_.bgAudio === 'm:' + id){ S_.bgAudio = 'off'; bga.removeAttribute('src'); delete bga.dataset.id; applyMusic(); }
+    save(true); renderSettings();
+  });
+}
 
 /* ----- backup ----- */
 function exportData(){
-  const data = JSON.stringify({app:'tasbeh', v:1, date:new Date().toISOString(), zikrs: st.zikrs}, null, 1);
+  const data = JSON.stringify({app:'tasbeh', v:2, date:new Date().toISOString(), zikrs: st.zikrs, stats: st.stats}, null, 1);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
   a.download = 'tasbeh-zaxira-' + new Date().toISOString().slice(0,10) + '.json';
@@ -843,7 +1107,9 @@ $('#jsonIn').addEventListener('change', e => {
     const clean = list.filter(z => z && z.name).map(z => ({id: z.id || uid(), name: String(z.name), ar: z.ar ? String(z.ar) : '', tr: z.tr ? String(z.tr) : '',
       count: Math.max(0, parseInt(z.count, 10) || 0), target: Math.max(0, parseInt(z.target, 10) || 0)}));
     confirmDlg('Tiklansinmi?', `Fayldan ${clean.length} ta zikr topildi. Hozirgi ro‘yxat almashtiriladi.`, 'Tiklash', () => {
-      st.zikrs = clean; st.sel = clean[0] ? clean[0].id : null; history = []; save(true); renderZikr(); closeSheets();
+      st.zikrs = clean; st.sel = clean[0] ? clean[0].id : null; history = [];
+      if(d.stats && typeof d.stats === 'object' && !Array.isArray(d.stats)) st.stats = d.stats;
+      save(true); renderZikr(); closeSheets();
     }, false);
   }).catch(() => confirmDlg('Xato', 'Bu fayl zaxira nusxa emas.', 'OK', () => {}, false));
 });
@@ -857,14 +1123,17 @@ async function wake(){
     } else if(lock){ await lock.release(); lock = null; }
   }catch(e){ lock = null; }
 }
-document.addEventListener('visibilitychange', () => { wake(); if(document.hidden) musicOff(); else if(S_.music && ac) musicOn(); });
-document.addEventListener('pointerdown', () => { wake(); if(S_.music && !musicNodes) musicOn(); }, {once:true});
+document.addEventListener('visibilitychange', () => { wake(); lastTick = performance.now(); applyMusic(); playVid(); if(document.hidden) save(true); });
+document.addEventListener('pointerdown', () => {
+  if(started) return; started = true; wake(); audio(); applyMusic(); playVid(); preloadTap();
+}, true);
 
 /* ----- start ----- */
 window.addEventListener('resize', resize);
 applyAccent(); applyBgFx();
-loadCustom().then(() => { if(S_.bg === 'custom' && !customUrl) S_.bg = 'koinot'; resize(); setBg(S_.bg); renderZikr(); });
+pruneStats();
 resize(); renderZikr();
+initMedia().then(() => { setBg(S_.bg); applyMusic(); renderTimers(); });
 requestAnimationFrame(loop);
 if(document.fonts) document.fonts.ready.then(() => { dirty = true; });
 if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));

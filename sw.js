@@ -1,5 +1,5 @@
 // Tasbeh — internetsiz ishlashi uchun
-const CACHE = 'tasbeh-v3';
+const CACHE = 'tasbeh-v4';
 const FILES = ['./', './index.html', './manifest.json', './fonts/amiri.woff2', './fonts/montserrat.woff2',
   './icon-180.png', './icon-192.png', './icon-512.png', './icon-512-maskable.png'];
 
